@@ -7,13 +7,22 @@
 # Concept of a "hand" is created for a Player
 # The "hand" can be printed to the terminal (create a show_hand() function within the class ???)
 
+########### PHASE TWO
+#
+#
+#
+#
+#
+#
+#
+#
+
+
 import random
 class Card():
     def __init__(self):
         self.players = ['Player_1', 'Player_2', 'Player_3', 'Player_4']
-        self.start_deck = []
-        self.shuffeled_deck = []
-        self.after_deal_deck = []
+        self.deck = []
         self.dealt_hands = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
         self.suits = ['♦', '♣', '♥', '♠' ]
         self.cards = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
@@ -21,27 +30,25 @@ class Card():
     def create_deck(self):
         for suit in self.suits:
             for card in self.cards:
-                self.start_deck.append(card + suit)
-        return self.start_deck
+                self.deck.append(card + suit)
+        return self.deck
 
 
     def shuffle(self):
-        random.shuffle(self.start_deck)
-        self.shuffeled_deck = self.start_deck
-        # print(self.shuffeled_deck)
-        return self.shuffeled_deck
+        random.shuffle(self.deck)
+        return self.deck
     
     def deal_cards(self):
-        self.after_deal_deck = self.shuffeled_deck
         for key in self.dealt_hands:
-            self.dealt_hands[key] = self.dealt_hands[key] + random.sample(self.shuffeled_deck, 2)
-            # print(self.dealt_hands[key])
-            for hand in self.dealt_hands[key]:
-                for card in hand:
-                    if card in self.after_deal_deck:
-                        self.after_deal_deck.remove(card)
+            self.dealt_hands[key] = self.dealt_hands[key] + random.sample(self.deck, 2)
+            # print(self.dealt_hands)
+            for card in self.dealt_hands[key]:
+                # print(hand)
+                if card in self.deck:
+                    self.deck.remove(card)
+            # print(self.deck)
 
-        return self.after_deal_deck
+        return self.deck
     
     def show_hand(self):
         string = str(self.dealt_hands['Player_1'])[1:-1]
@@ -61,3 +68,4 @@ class Card():
 
 new_game = Card()
 new_game.start_game()
+# print('Dealt hands: ', new_game.dealt_hands)
