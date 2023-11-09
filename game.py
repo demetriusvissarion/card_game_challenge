@@ -21,11 +21,13 @@
 import random
 class Card():
     def __init__(self):
+        self.suits = ['♦', '♣', '♥', '♠' ]
+        self.cards = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
         self.players = ['Player_1', 'Player_2', 'Player_3', 'Player_4']
         self.deck = []
         self.dealt_hands = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
-        self.suits = ['♦', '♣', '♥', '♠' ]
-        self.cards = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
+        # self.trick = {'Player_1': '', 'Player_2': '', 'Player_3': '', 'Player_4': ''}
+        # self.tricks = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
     
     def create_deck(self):
         for suit in self.suits:
@@ -38,15 +40,12 @@ class Card():
         random.shuffle(self.deck)
         return self.deck
     
-    def deal_cards(self):
+    # cards_dealt set as default to 2 until full game rules applied
+    def deal_cards(self, cards_dealt = 2):
         for key in self.dealt_hands:
-            self.dealt_hands[key] = self.dealt_hands[key] + random.sample(self.deck, 2)
-            # print(self.dealt_hands)
-            for card in self.dealt_hands[key]:
-                # print(hand)
-                if card in self.deck:
-                    self.deck.remove(card)
-            # print(self.deck)
+            for num in range(0, cards_dealt):
+                card_dealt = self.deck.pop(0)
+                self.dealt_hands[key].append(card_dealt)
 
         return self.deck
     
@@ -65,6 +64,30 @@ class Card():
         print('You are Player_1')
         print('Your hand is:')
         self.show_hand()
+
+    # def play_hand(self):
+    #     print('Select card to play: ')
+    #     counter  = 1
+    #     for card in self.dealt_hands['Player_1']:
+    #         print(f'Press key {counter} and Enter for card {card}')
+    #         counter += 1
+    #     selected_card = input("Your selection: ")
+    #     if selected_card == 1:
+    #         self.trick['Player_1'] = self.dealt_hands['Player_1'][0]
+    #     elif selected_card == 2:
+    #         self.trick['Player_1'] = self.dealt_hands['Player_1'][1]
+    
+    # def bot_play(self):
+    #     counter = 2
+    #     for player in range(counter, 5):
+    #         bot_card = random.sample(self.dealt_hands['Player_' + counter], 1)
+    #         self.trick['Player_' + counter] = bot_card
+    
+    # def decide_trick_winner(self):
+    #     # compare cards played, decide winner, save to "tricks" dictionary
+
+
+
 
 new_game = Card()
 new_game.start_game()
