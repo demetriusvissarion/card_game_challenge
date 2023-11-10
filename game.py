@@ -70,26 +70,23 @@ class Card():
         # use players_order list to play the hand
         for player in self.players_order:
             if player == 'Player_1':
-                print('Select card to play: ')
+                print('Player_1, select a card to play: ')
                 if '2♣' in self.dealt_hands['Player_1']:
                     print('Note: you have the 2♣ so that is the only card you can play')
                     for card in self.dealt_hands['Player_1']:
                         if card == '2♣':
-                            print(f'Type 1 and \"Enter\" to play card {card}')
+                            print(f'Type {self.dealt_hands[player].index(card)} and \"Enter\" to play card {card}')
                     selected_card = int(input("Your selection: "))
                     selected_card = 1
                 else:
-                    counter  = 0
                     for card in self.dealt_hands['Player_1']:
-                        print(f'Type {counter} and \"Enter\" to play card {card}')
-                        counter += 1
+                        print(f'Type {self.dealt_hands[player].index(card)} and \"Enter\" to play card {card}')
                     selected_card = int(input("Your selection: "))
-                if selected_card:
-                    self.trick['Player_1'] = self.dealt_hands['Player_1'][selected_card]
-                    # remove played card from self.dealt_hands
-                    self.dealt_hands['Player_1'].remove(self.dealt_hands['Player_1'][selected_card])
-                    print(f'You played: {self.dealt_hands["Player_1"][selected_card]}')
-                    print(f'Your hand is now: {self.dealt_hands["Player_1"]}')
+                self.trick['Player_1'] = self.dealt_hands['Player_1'][selected_card]
+                # remove played card from self.dealt_hands
+                print(f'You played: {self.dealt_hands["Player_1"][selected_card]}')
+                self.dealt_hands['Player_1'].remove(self.dealt_hands['Player_1'][selected_card])
+                print(f'Your hand is now: {self.dealt_hands["Player_1"]}')
             else:
                 bot_card = random.sample(self.dealt_hands[player], 1)[0]
                 print(f'Bot card is: {bot_card}')
@@ -121,13 +118,15 @@ class Card():
         print('You are Player_1')
         print('Your hand is:')
         self.show_hand()
+        # wrap into a while loop and repeat it until all players hands are exhausted:
+        # while len(self.dealt_hands['Player_1']) > 0:
         self.decide_play_order()
         print(f'{self.trick_starter} has the 2♣ so he starts the trick')
         self.play_hand()
         print('Trick is: ', self.trick)
         # self.trick
-        # self.decide_trick_winner()
-        # print(f'Trick won by {self.trick_winner}')
+        self.decide_trick_winner()
+        print(f'Trick won by {self.trick_winner}')
 
 
 
