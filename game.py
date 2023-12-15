@@ -1,32 +1,11 @@
-########### PHASE ONE
-# Create a Card class: 
-# - generates an instance of each card
-# - allows cards to be shuffled
-# - allows cards to be dealt to 4 players (remember which cards where played)
-#
-# Concept of a "hand" is created for a Player
-# The "hand" can be printed to the terminal (create a show_hand() function within the class ???)
-
-########### PHASE TWO
-# - ability to play cards: 13 "tricks" (rounds) => so deal 13 cards/player at start
-# - user can choose what card to play from their own hand => remove chosen card from hand
-# - bot payed cards chosen randomly
-# - forming of "tricks" - 4 cards, 1 from each player
-# - decide each "trick" winner and save the cards to his stack 
-
-########### PHASE THREE
-# - 2 Clubs owner goes first and plays that card first
-
-# - players must follow suit
-# - tricks are won by the player with the highest card of the leading suit
-# - player who won the trick plays first card of next trick
-
 import sys
 # sys.exit()
 import random
 
+from card import Card
 
-class Card():
+
+class Game():
     def __init__(self):
         self.suits = ['♦', '♣', '♥', '♠' ]
         self.cards = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
@@ -45,7 +24,7 @@ class Card():
     def create_deck(self):
         for suit in self.suits:
             for card in self.cards:
-                self.deck.append(card + suit)
+                self.deck.append(Card(card,suit))
         return self.deck
 
     def shuffle(self):
@@ -174,7 +153,7 @@ class Card():
         return self.trick
     
     def decide_trick_winner(self):
-        # compare cards played to decide winner
+        # compare cards played to decide winner: add all rules
         # save "trick" cards to winner in the "tricks" dictionary
         # save winner name in self.trick_winner
 
@@ -193,6 +172,8 @@ class Card():
         print('You are Player_1')
         print('Your hand is:')
         self.show_hand()
+
+        # start loop for 12 tricks here
         self.decide_play_order()
         if self.trick_starter == 'Player_1':
             print(f'You have the 2♣ so you start the first trick')
@@ -202,10 +183,14 @@ class Card():
         print('Trick is: ', self.trick)
         # self.trick
         self.decide_trick_winner()
-        print(f'Trick won by {self.trick_winner}')
+        print(f'Trick won by {self.trick_winner}, he will start the next trick')
+        # end loop for 12 tricks here
+
+        # calculate score for all game
+        # announce game winner and show score card
 
 
 
-new_game = Card()
+new_game = Game()
 new_game.start_game()
 # print('Dealt hands: ', new_game.dealt_hands)
