@@ -14,9 +14,17 @@
 # - forming of "tricks" - 4 cards, 1 from each player
 # - decide each "trick" winner and save the cards to his stack 
 
+########### PHASE THREE
+# - 2 Clubs owner goes first and plays that card first
 
+# - players must follow suit
+# - tricks are won by the player with the highest card of the leading suit
+# - player who won the trick plays first card of next trick
 
+import sys
 import random
+
+
 class Card():
     def __init__(self):
         self.suits = ['♦', '♣', '♥', '♠' ]
@@ -25,9 +33,11 @@ class Card():
         self.deck = []
         self.dealt_hands = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
         self.players_order = []
+        # keep a record of the number of rounds (tricks) played for display
         self.trick_counter = 0
+        # 'trick' stores cards played during this round (trick) by each player
         self.trick = {'Player_1': '', 'Player_2': '', 'Player_3': '', 'Player_4': ''}
-        self.tricks = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
+        self.points = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
         self.trick_starter = ''
         self.trick_winner = ''
     
@@ -41,9 +51,9 @@ class Card():
         random.shuffle(self.deck)
         return self.deck
     
-    def deal_cards(self, cards_dealt = 13):
+    def deal_cards(self):
         for key in self.dealt_hands:
-            for num in range(0, cards_dealt):
+            for num in range(0, 13):
                 card_dealt = self.deck.pop(0)
                 self.dealt_hands[key].append(card_dealt)
         return self.deck
@@ -60,43 +70,98 @@ class Card():
         else:
             self.trick_starter = self.trick_winner
         return self.trick_starter
+    
+    def user_plays_card(self):
+        player = 'Player_1'
+        print('Player_1, select a card to play: ')
+
+        if '2♣' in self.dealt_hands[player]:
+            print('Note: you have the 2♣ so that is the only card you can play')
+            for card in self.dealt_hands[player]:
+                if card == '2♣':
+                    print(f'Type {self.dealt_hands[player].index(card)} and \"Enter\" to play card {card}')
+            selected_card = int(input("Your selection: "))
+        else:
+            valid_selections = {}
+            for card in self.dealt_hands[player]:
+                # if trick exists: 
+                if self.trick:
+                    # print('self.trick["Player_1"] is: ', self.trick)
+                    # print('self.dealt_hands is: ', self.dealt_hands)
+
+                    # if same suit card(s) in hand,limit possible selections to that
+                    if card[-1] in self.trick[self.trick_starter]:
+                        card_number = self.dealt_hands[player].index(card)
+                        valid_selections[card_number] = card
+                    # else print all cards in hand as possible selections (+add message)
+                
+                # if trick doesn't exist???
+
+            # print valid card selections (can make this seperate function)
+            for card_number, card in valid_selections.items():             
+                print(f'Type {card_number} and \"Enter\" to play card {card}')
+
+            # exception handling and validation
+            while True:
+                try:
+                    selected_card = int(input("Your selection: "))
+                except ValueError:
+                    print("Sorry, I didn't understand that.")
+                    #better try again... Return to the start of the loop
+                    continue
+                if selected_card not in list(valid_selections.keys()):
+                    print("Not an appropriate choice.")
+                    continue
+                else:
+                    #we're ready to exit the loop.
+                    break
+
+        self.trick[player] = self.dealt_hands[player][selected_card]
+        print(f'You played: {self.dealt_hands["Player_1"][selected_card]}')
+
+        # remove the selected card from the hand
+        self.dealt_hands[player].remove(self.dealt_hands[player][selected_card])
+        print(f'Your hand is now: {self.dealt_hands["Player_1"]}')
 
     def play_hand(self):
+        self.trick_counter += 1
         first_player_index = self.players.index(self.trick_starter)
         # print(f'first_player_index: {first_player_index}')
         self.players_order = self.players[(first_player_index):] + self.players[:(first_player_index)]
         print('The players order for this trick is: ', self.players_order)
 
-        # use players_order list to play the hand
         for player in self.players_order:
-            if player == 'Player_1':
-                print('Player_1, select a card to play: ')
-                if '2♣' in self.dealt_hands['Player_1']:
-                    print('Note: you have the 2♣ so that is the only card you can play')
-                    for card in self.dealt_hands['Player_1']:
-                        if card == '2♣':
-                            print(f'Type {self.dealt_hands[player].index(card)} and \"Enter\" to play card {card}')
-                    selected_card = int(input("Your selection: "))
-                    selected_card = 1
-                else:
-                    for card in self.dealt_hands['Player_1']:
-                        print(f'Type {self.dealt_hands[player].index(card)} and \"Enter\" to play card {card}')
-                    selected_card = int(input("Your selection: "))
-                self.trick['Player_1'] = self.dealt_hands['Player_1'][selected_card]
-                # remove played card from self.dealt_hands
-                print(f'You played: {self.dealt_hands["Player_1"][selected_card]}')
-                self.dealt_hands['Player_1'].remove(self.dealt_hands['Player_1'][selected_card])
-                print(f'Your hand is now: {self.dealt_hands["Player_1"]}')
-            else:
-                bot_card = random.sample(self.dealt_hands[player], 1)[0]
-                print(f'Bot card is: {bot_card}')
-                bot_card_index = self.dealt_hands[player].index(bot_card)
-                # print(f'Bot card index is: {bot_card_index}')
-                # remove played card from self.dealt_hands
-                self.dealt_hands[player].remove(self.dealt_hands[player][bot_card_index - 1])
 
-                self.trick[player] = bot_card
-        return self.trick,
+            # User plays a card (Player_1)
+            if player == 'Player_1':
+                self.user_plays_card()
+
+            # Computer bot plays
+            else:
+                print(f'{player} hand is: ', self.dealt_hands[player])
+                # sys.exit()
+                # 2 of clubs owner goes first and plays that card first
+                if '2♣' in self.dealt_hands[player]:
+                    # mandatory_card = int(self.dealt_hands[player].index('2♣'))
+                    self.trick[player] = '2♣'
+                    print(f'{player} played the card: {self.trick[player]}')
+
+                else:
+                    for card in self.dealt_hands[player]:
+                        valid_cards_to_play = []
+                        # if trick exists:                        
+                        if self.trick:
+                            # if same suit cards in hand choose randomly from those cards
+                            if card[-1] in self.trick[self.trick_starter]:
+                                # else choose randomly from all cards
+
+                    bot_card = random.sample(self.dealt_hands[player], 1)[0]
+                    bot_card_index = self.dealt_hands[player].index(bot_card)
+                    self.dealt_hands[player].remove(self.dealt_hands[player][bot_card_index - 1])
+                    self.trick[player] = bot_card
+                    print(f'{player} played the card: {bot_card}')
+
+        return self.trick
     
     def decide_trick_winner(self):
         # compare cards played to decide winner
@@ -118,8 +183,6 @@ class Card():
         print('You are Player_1')
         print('Your hand is:')
         self.show_hand()
-        # wrap into a while loop and repeat it until all players hands are exhausted:
-        # while len(self.dealt_hands['Player_1']) > 0:
         self.decide_play_order()
         print(f'{self.trick_starter} has the 2♣ so he starts the trick')
         self.play_hand()
