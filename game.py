@@ -50,14 +50,17 @@ class Game():
         hand = [card.name for card in self.players[0].hand]
         print(hand)
 
-#     def decide_play_order(self):
-#         if self.trick_counter == 0:
-#             for player, hand in self.dealt_hands.items():
-#                 if '2♣' in hand:
-#                     self.trick_starter = player
-#         else:
-#             self.trick_starter = self.trick_winner
-#         return self.trick_starter
+    def decide_play_order(self):
+        if self.trick_counter == 0:
+            for player in self.players:
+                hand = [card.name for card in player.hand]
+                if '2♣' in hand:
+                    self.trick_starter = player.name
+        else:
+            self.trick_starter = self.trick_winner
+        
+        self.trick_counter += 1
+        return self.trick_starter
     
 #     def user_plays_card(self):
 #         player = 'Player_1'
@@ -184,12 +187,12 @@ class Game():
         
         self.show_hand()
 
-        # # start loop for 12 tricks here
-        # self.decide_play_order()
-        # if self.trick_starter == 'Player_1':
-        #     print(f'You have the 2♣ so you start the first trick')
-        # else:
-        #     print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
+        # start loop for 12 tricks here
+        self.decide_play_order()
+        if self.trick_starter == 'Player_1':
+            print(f'You have the 2♣ so you start the first trick')
+        else:
+            print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
         # self.play_hand()
         # print('Trick is: ', self.trick)
         # # self.trick
