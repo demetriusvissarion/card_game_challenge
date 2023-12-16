@@ -3,3 +3,10 @@ class Card:
         self.number = number
         self.suit = suit
         self.name = f'{number}{suit}'
+
+
+
+
+
+
+

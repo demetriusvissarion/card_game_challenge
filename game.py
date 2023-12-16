@@ -16,12 +16,14 @@ class Game():
 
         self.deck = []
 
-        # self.dealt_hands = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []} # store in player object
         self.players_order = []
+
         # keep a record of the number of rounds (tricks) played for display
         self.trick_counter = 0
+
         # 'trick' stores cards played during this round (trick) by each player
         self.trick = {'Player_1': '', 'Player_2': '', 'Player_3': '', 'Player_4': ''}
+
         self.score = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
         self.trick_starter = ''
         self.trick_winner = ''
@@ -44,23 +46,9 @@ class Game():
                 card_dealt = self.deck.pop(0)
                 self.players[num].hand.append(card_dealt)
 
-new_game = Game()
-new_game.create_deck()
-new_game.shuffle()
-new_game.create_players()
-new_game.deal_cards()
-# for card in new_game.players[1].hand:
-#     print(card.name)
-print('len(new_game.players[0].hand): ', len(new_game.players[0].hand))
-print('len(new_game.players[1].hand): ', len(new_game.players[1].hand))
-print('len(new_game.players[2].hand): ', len(new_game.players[2].hand))
-print('len(new_game.players[3].hand): ', len(new_game.players[3].hand))
-# print('new_game.deck: ', new_game.deck)
-sys.exit()
-
-#     def show_hand(self):
-#         string = str(self.dealt_hands['Player_1'])[1:-1]
-#         print(string)
+    def show_hand(self):
+        hand = [card.name for card in self.players[0].hand]
+        print(hand)
 
 #     def decide_play_order(self):
 #         if self.trick_counter == 0:
@@ -182,35 +170,38 @@ sys.exit()
 #         return self.trick_winner
 
 
-#     def start_game(self):
-#         self.create_deck()
-#         self.shuffle()
-#         print('Cards shuffled')
-#         self.deal_cards()
-#         print('Cards dealt')
-#         print('Game has started!')
-#         print('You are Player_1')
-#         print('Your hand is:')
-#         self.show_hand()
+    def start_game(self):
+        self.create_deck()
+        self.shuffle()
+        print('Cards shuffled')
+        self.create_players()
+        self.deal_cards()
 
-#         # start loop for 12 tricks here
-#         self.decide_play_order()
-#         if self.trick_starter == 'Player_1':
-#             print(f'You have the 2♣ so you start the first trick')
-#         else:
-#             print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
-#         self.play_hand()
-#         print('Trick is: ', self.trick)
-#         # self.trick
-#         self.decide_trick_winner()
-#         print(f'Trick won by {self.trick_winner}, he will start the next trick')
-#         # end loop for 12 tricks here
+        print('Cards dealt')
+        print('Game has started!')
+        print('You are Player_1')
+        print('Your hand is:')
+        
+        self.show_hand()
 
-#         # calculate score for all game
-#         # announce game winner and show score card
+        # # start loop for 12 tricks here
+        # self.decide_play_order()
+        # if self.trick_starter == 'Player_1':
+        #     print(f'You have the 2♣ so you start the first trick')
+        # else:
+        #     print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
+        # self.play_hand()
+        # print('Trick is: ', self.trick)
+        # # self.trick
+        # self.decide_trick_winner()
+        # print(f'Trick won by {self.trick_winner}, he will start the next trick')
+        # # end loop for 12 tricks here
+
+        # # calculate score for all game
+        # # announce game winner and show score card
 
 
 
-# new_game = Game()
-# new_game.start_game()
-# # print('Dealt hands: ', new_game.dealt_hands)
+new_game = Game()
+new_game.start_game()
+# print('Dealt hands: ', new_game.dealt_hands)
