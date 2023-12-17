@@ -3,4 +3,4 @@ class Player:
         self.name = name
         # 'hand' list stores card objects
         self.hand = []
-        self.score = 0
+        self.cards_won = []
