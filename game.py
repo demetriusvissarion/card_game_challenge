@@ -55,14 +55,14 @@ class Game():
             for player in self.players:
                 hand = [card.name for card in player.hand]
                 if '2♣' in hand:
-                    self.trick_starter = player.name
+                    self.trick_starter = player
         else:
             self.trick_starter = self.trick_winner
         
         self.trick_counter += 1
         return self.trick_starter
     
-    def user_card_selection(self, valid_selections, selected_card):
+    def user_card_selection(self, valid_selections):
         # exception handling and validation
         while True:
             try:
@@ -77,11 +77,14 @@ class Game():
             else:
                 #we're ready to exit the loop.
                 break
+        
+        return selected_card
     
     def user_plays_card(self):
         print('Player_1, select a card to play: ')
         player_1 = self.players[0]
         player_1_hand = [card.name for card in player_1.hand]
+        valid_selections = {}
 
         # players[Player(hand(card1, card2, card3...)), Player(...), Player(...), Player(...)]
 
@@ -93,31 +96,30 @@ class Game():
                     card_number = player_1_hand.index(card)
                     valid_selections[card_number] = card
             selected_card = int(input("Your selection: "))
-            self.user_card_selection(valid_selections, selected_card)
+            selected_card = self.user_card_selection(valid_selections)
+        else:
+            # if trick exists: 
+            if self.trick:
+                for card in player_1_hand:
+                        # if same suit card(s) in hand,limit possible selections to that
+                        if card[-1] in self.trick[self.trick_starter.name]:
+                            card_number = player_1_hand.index(card)
+                            valid_selections[card_number] = card
+                    
+            # if trick doesn't exist choose randomly from all cards
+            if not valid_selections:
+                for card in player_1_hand:
+                    card_number = player_1_hand.index(card)
+                    valid_selections[card_number] = card 
 
-        # if trick exists: 
-        valid_selections = {}
-        if self.trick:
-            for card in player_1_hand:
-                    # if same suit card(s) in hand,limit possible selections to that
-                    if card[-1] in self.trick[self.trick_starter]:
-                        card_number = player_1_hand.index(card)
-                        valid_selections[card_number] = card
-                
-        # if trick doesn't exist choose randomly from all cards
-        if not valid_selections:
-            for card in player_1_hand:
-                card_number = player_1_hand.index(card)
-                valid_selections[card_number] = card 
+            # print valid card selections (can make this seperate function)
+            for card_number, card in valid_selections.items():             
+                print(f'Type {card_number} and \"Enter\" to play card {card}')
 
-        # print valid card selections (can make this seperate function)
-        for card_number, card in valid_selections.items():             
-            print(f'Type {card_number} and \"Enter\" to play card {card}')
+            # exception handling and validation
+            selected_card = self.user_card_selection(valid_selections)
 
-        # exception handling and validation
-        self.user_card_selection(valid_selections, selected_card)
-
-        self.trick[player_1] = player_1_hand[selected_card]
+        self.trick[player_1.name] = player_1_hand[selected_card]
         print(f'You played: {player_1_hand[selected_card]}')
 
         # remove the selected card from the hand
@@ -126,7 +128,7 @@ class Game():
 
     def computer_plays_card(self, player):
         player_hand = [card.name for card in player.hand]
-        print(f'{player.name} hand is: ', player_hand)
+        print(f'<dev> {player.name} hand is: ', player_hand)
         # 2 of clubs owner goes first and plays that card first
         if '2♣' in player_hand:
             self.trick[player.name] = '2♣'
@@ -138,7 +140,7 @@ class Game():
             if self.trick:
                 # if same suit cards in hand choose randomly from those cards
                 for card in player_hand:
-                    if card[-1] in self.trick[self.trick_starter]:
+                    if card[-1] in self.trick[self.trick_starter.name]:
                         card_number = player_hand.index(card)
                         valid_selections[card_number] = card                     
                     
@@ -160,7 +162,8 @@ class Game():
         first_player_index = self.players.index(self.trick_starter)
         # print(f'first_player_index: {first_player_index}')
         self.players_order = self.players[(first_player_index):] + self.players[:(first_player_index)]
-        print('The players order for this trick is: ', self.players_order)
+        string_players_order = [player.name for player in self.players_order]
+        print('The players order for this trick is: ', string_players_order)
 
         for player in self.players_order:
             # User plays a card (Player_1)
@@ -173,14 +176,14 @@ class Game():
 
         return self.trick
     
-#     def decide_trick_winner(self):
-#         # compare cards played to decide winner: add all rules
-#         # save "trick" cards to winner in the "tricks" dictionary
-#         # save winner name in self.trick_winner
+    def decide_trick_winner(self):
+        # compare cards played to decide winner: add all rules
+        # save "trick" cards to winner in the "tricks" dictionary
+        # save winner name in self.trick_winner
 
-#         # for testing purposes I'm setting the winner of the first trick as Player_1
-#         self.trick_winner = "Player_1"
-#         return self.trick_winner
+        # for testing purposes I'm setting the winner of the first trick as Player_1
+        self.trick_winner = self.players[0]
+        return self.trick_winner
 
 
     def start_game(self):
@@ -202,16 +205,16 @@ class Game():
         if self.trick_starter == 'Player_1':
             print(f'You have the 2♣ so you start the first trick')
         else:
-            print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
-        # self.play_hand()
-        # print('Trick is: ', self.trick)
-        # # self.trick
-        # self.decide_trick_winner()
-        # print(f'Trick won by {self.trick_winner}, he will start the next trick')
-        # # end loop for 12 tricks here
+            print(f'{self.trick_starter.name} has the 2♣ so he starts the first trick')
+        self.play_hand()
+        print('Trick is: ', self.trick)
+        # self.trick
+        self.decide_trick_winner()
+        print(f'Trick won by {self.trick_winner.name}, he will start the next trick')
+        # end loop for 12 tricks here
 
-        # # calculate score for all game
-        # # announce game winner and show score card
+        # calculate score for all game
+        # announce game winner and show score card
 
 
 
