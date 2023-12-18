@@ -24,9 +24,10 @@ class Hand():
         # 'trick' stores cards played during this round (trick) by each player
         self.trick = {'Player_1': '', 'Player_2': '', 'Player_3': '', 'Player_4': ''}
 
-        # self.score = {'Player_1': [], 'Player_2': [], 'Player_3': [], 'Player_4': []}
         self.trick_starter = ''
         self.trick_winner = ''
+        self.hand_winner = None
+        self.score = {'Player_1': 0, 'Player_2': 0, 'Player_3': 0, 'Player_4': 0}
     
     def create_deck(self):
         for suit in self.suits:
@@ -55,7 +56,7 @@ class Hand():
             for player in self.players:
                 hand = [card.name for card in player.hand]
                 if '2♣' in hand:
-                    self.trick_starter = player
+                    self.trick_starter = player.name
         else:
             self.trick_starter = self.trick_winner
         
@@ -102,7 +103,7 @@ class Hand():
             if self.trick:
                 for card in player_1_hand:
                         # if same suit card(s) in hand,limit possible selections to that
-                        if card[-1] in self.trick[self.trick_starter.name]:
+                        if card[-1] in self.trick[self.trick_starter]:
                             card_number = player_1_hand.index(card)
                             valid_selections[card_number] = card
                     
@@ -140,7 +141,7 @@ class Hand():
             if self.trick:
                 # if same suit cards in hand choose randomly from those cards
                 for card in player_hand:
-                    if card[-1] in self.trick[self.trick_starter.name]:
+                    if card[-1] in self.trick[self.trick_starter]:
                         card_number = player_hand.index(card)
                         valid_selections[card_number] = card                     
                     
@@ -159,34 +160,42 @@ class Hand():
 
     def play_hand(self):
         self.trick_counter += 1
-        first_player_index = self.players.index(self.trick_starter)
-        # print(f'first_player_index: {first_player_index}')
-        self.players_order = self.players[(first_player_index):] + self.players[:(first_player_index)]
-        string_players_order = [player.name for player in self.players_order]
+        first_player_index = self.player_names.index(self.trick_starter)
+        self.players_order = self.player_names[(first_player_index):] + self.player_names[:(first_player_index)]
+        string_players_order = [player for player in self.players_order]
         print('The players order for this trick is: ', string_players_order)
 
         for player in self.players_order:
             # User plays a card (Player_1)
-            if player.name == 'Player_1':
+            if player == 'Player_1':
                 self.user_plays_card()
 
             # Computer bot plays a card (Player_2, Player_3, Player_4)
             else:
                 self.computer_plays_card(player)
-
-        return self.trick
+        # return self.trick
     
     def decide_trick_winner(self):
-        # compare cards played to decide winner: add all rules
-        # save "trick" cards to winner in the player object
-        # save winner name in self.trick_winner
+        # use player.cards_won to calculate self.hand_winner
+        for player in self.players:
+            for card in player.cards_won:
+                if card == 'Q♠':
+                    self.score[player.name] += 13
+                elif card[-1] == '♥':
+                    self.score[player.name] += 1
+        self.trick_winner = self.find_winner()
 
-        # for testing purposes I'm setting the winner of the first trick as Player_1
-        self.trick_winner = self.players[0]
-        return self.trick_winner
+    def find_winner(self):
+        min_score = 999
+        winner = None
+        for player, points in self.score.items():
+            if points < min_score:
+                min_score = points
+                winner = player
+        return winner
 
 
-    def start_game(self):
+    def start_hand(self):
         self.create_deck()
         self.shuffle()
         print('Cards shuffled')
@@ -194,30 +203,37 @@ class Hand():
         self.deal_cards()
 
         print('Cards dealt')
-        print('Game has started!')
+        print('Hand has started!')
         print('You are Player_1')
         print('Your hand is:')
         self.show_hand(0)
 
-        # start loop for 12 tricks here
-            # for _ in range(12):
-        self.decide_play_order()
-        if self.trick_starter == 'Player_1':
-            print(f'You have the 2♣ so you start the first trick')
-        else:
-            print(f'{self.trick_starter.name} has the 2♣ so he starts the first trick')
-        self.play_hand()
-        print('Trick is: ', self.trick)
-        # self.trick
-        self.decide_trick_winner()
-        print(f'Trick won by {self.trick_winner.name}, he will start the next trick')
-        # end loop for 12 tricks here
+        # start loop for 13 tricks here
+        for _ in range(13):
+            self.decide_play_order()
+            if self.trick_starter == 'Player_1':
+                print(f'You have the 2♣ so you start the first trick')
+            else:
+                print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
+            self.play_hand()
+            print('Trick is: ', self.trick)
+            self.decide_trick_winner()
+            if self.trick_counter < 13:
+                print(f'Trick won by {self.trick_winner}, he will start the next trick')
+            else:
+                print(f'Last trick won by {self.trick_winner}')
+        # end loop for 13 tricks here
+                
+        print(f'Hand won by {self.hand_winner}')
 
-        # calculate score for all game
-        # announce game winner and show score card
+# test_hand1.score = {'Player_1': 100, 'Player_2': 0, 'Player_3': 0, 'Player_4': 14}
 
+# right now I have a while loop that runs while the score of any of the players is smaller than 100, but I want to check also if there is only 1 player with the minimum score, so change my code:
 
-
-new_hand = Hand()
-new_hand.start_game()
-# print('Dealt hands: ', new_game.dealt_hands)
+# while score_board.total_score['Player_1'] < 100 and score_board.total_score['Player_2'] < 100 and score_board.total_score['Player_3'] < 100 and score_board.total_score['Player_4'] < 100:
+#     new_hand = Hand()
+#     new_hand.start_hand()
+#     # save hand.score to the ScoreBoard class
+#     score_board.hands_score.append(new_hand.score)
+#     print(f'Hand won by {new_hand.hand_winner}')
+#     score_board.score_table()

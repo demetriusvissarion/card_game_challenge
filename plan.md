@@ -38,4 +38,7 @@ Begin adding some intelligent play to the "Bot" players e.g. (not necessarily in
 * Throw away Q Spades if ever possible
 * Don't lead something like Q Spades or high Hearts if possible
 
-
+Terms:
+trick
+hand
+game
