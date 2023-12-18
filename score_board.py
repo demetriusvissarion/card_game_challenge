@@ -12,12 +12,12 @@ class ScoreBoard:
 
         for i, hand in enumerate(self.hands_score, start=1):
             # Print the scores for each player in the current hand with vertical lines
-            print(f"{i:<10}|{hand.score['Player_1']:<10}|{hand.score['Player_2']:<10}|{hand.score['Player_3']:<10}|{hand.score['Player_4']:<10}|")
+            print(f"{i:<10}|{hand['Player_1']:<10}|{hand['Player_2']:<10}|{hand['Player_3']:<10}|{hand['Player_4']:<10}|")
             print(f"{'-' * 50}")
 
             # Update the total score for each player
             for player in self.total_score:
-                self.total_score[player] += hand.score[player]
+                self.total_score[player] += hand[player]
 
         # Print the total score row with horizontal lines
         print(f"{'Total Score':<10}|{self.total_score['Player_1']:<10}|{self.total_score['Player_2']:<10}|{self.total_score['Player_3']:<10}|{self.total_score['Player_4']:<10}|")
