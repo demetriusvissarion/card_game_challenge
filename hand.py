@@ -42,10 +42,16 @@ class Hand():
             self.players.append(Player(name))
     
     def deal_cards(self):
+        def get_card_name(card):
+            return card.name
+
         for _ in range(13):
             for num in range(4):
                 card_dealt = self.deck.pop(0)
                 self.players[num].hand.append(card_dealt)
+
+        for player in self.players:
+            player.hand.sort(key=get_card_name)
 
     def show_hand(self, player_index):
         hand = [card.name for card in self.players[player_index].hand]
@@ -60,38 +66,36 @@ class Hand():
         else:
             self.trick_starter = self.trick_winner
         
-        self.trick_counter += 1
         return self.trick_starter
     
     def user_card_selection(self, valid_selections):
         # exception handling and validation
         while True:
             try:
-                selected_card = int(input("Your selection: "))
+                selected_card_index = int(input("Your selection: "))
             except ValueError:
                 print("Sorry, I didn't understand that.")
                 #better try again... return to the start of the loop
                 continue
-            if selected_card not in list(valid_selections.keys()):
+            if selected_card_index not in list(valid_selections.keys()):
                 print("Not an appropriate choice.")
                 continue
             else:
                 #we're ready to exit the loop.
                 break
         
-        return selected_card
+        return selected_card_index
     
     def remove_played_card(self, player, card_to_remove):
-        player_index = self.players.index(player)
+        player_index = self.player_names.index(player.name)
+        # print('player: ', player)
         self.players[player_index].hand = [card for card in self.players[player_index].hand if card.name != card_to_remove]
     
-    def user_plays_card(self):
+    def user_plays_card(self, player):
         print('Player_1, select a card to play: ')
-        player_1 = self.players[0]
+        player_1 = player
         player_1_hand = [card.name for card in player_1.hand]
         valid_selections = {}
-
-        # players[Player(hand(card1, card2, card3...)), Player(...), Player(...), Player(...)]
 
         if '2♣' in player_1_hand:
             print('Note: you have the 2♣ so that is the only card you can play')
@@ -100,19 +104,16 @@ class Hand():
                     print(f'Type {player_1_hand.index(card)} and \"Enter\" to play card {card}')
                     card_number = player_1_hand.index(card)
                     valid_selections[card_number] = card
-            # selected_card = int(input("Your selection: "))
-            selected_card = self.user_card_selection(valid_selections)
+            selected_card_index = self.user_card_selection(valid_selections)
         else:
-            # if trick exists: 
-            if self.trick:
+            # if trick has at least one value (it means another player started the trick): 
+            if any(card_value for card_value in self.trick.values()):
                 for card in player_1_hand:
                         # if same suit card(s) in hand,limit possible selections to that
                         if card[-1] in self.trick[self.trick_starter]:
                             card_number = player_1_hand.index(card)
                             valid_selections[card_number] = card
-                    
-            # if trick doesn't exist choose randomly from all cards
-            if not valid_selections:
+            else:
                 for card in player_1_hand:
                     card_number = player_1_hand.index(card)
                     valid_selections[card_number] = card 
@@ -122,18 +123,18 @@ class Hand():
                 print(f'Type {card_number} and \"Enter\" to play card {card}')
 
             # exception handling and validation
-            selected_card = self.user_card_selection(valid_selections)
+            selected_card_index = self.user_card_selection(valid_selections)
 
-        self.trick[player_1.name] = player_1_hand[selected_card]
-        print(f'You played: {player_1_hand[selected_card]}')
+        selected_card = player_1_hand[selected_card_index]
+        self.trick[player_1.name] = selected_card
+        print(f'You played: {selected_card}')
 
         # remove the selected card from the hand
         self.remove_played_card(player_1, selected_card)
 
     def computer_plays_card(self, player):
-        player_object = player
-        player_hand = [card.name for card in player_object.hand]
-        print(f'<dev> {player.name} hand is: ', player_hand)
+        player_hand = [card.name for card in player.hand]
+        # print(f'<dev> {player.name} hand is: ', player_hand)
         # 2 of clubs owner goes first and plays that card first
         if '2♣' in player_hand:
             self.trick[player.name] = '2♣'
@@ -176,19 +177,42 @@ class Hand():
         for player in self.players_order:
             # User plays a card (Player_1)
             if player == 'Player_1':
-                self.user_plays_card()
+                player_object = next((obj for obj in self.players if obj.name == player), None)
+                self.user_plays_card(player_object)
 
             # Computer bot plays a card (Player_2, Player_3, Player_4)
             else:
                 player_object = next((obj for obj in self.players if obj.name == player), None)
                 self.computer_plays_card(player_object)
-        # return self.trick
+
+        self.trick_counter += 1
+
+                
+    def card_value(self, card):
+        # order of card values for comparison
+        card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
+        # get card value from the card string
+        value = card[:-1]
+
+        # return the numeric value
+        return card_values.get(value, 0)
     
     # find trick winner and save score
     def decide_trick_winner(self):
-        # Trick is:  {'Player_1': '3♣', 'Player_2': '5♣', 'Player_3': '2♣', 'Player_4': '8♣'}
-        # compare card played by the trick starter with higher same suit or 'Q♠'
-        self.trick_winner = 
+        trick_cards = self.trick.values()
+
+        # find the suit of the card played by the trick starter
+        starter_card = self.trick[self.trick_starter]
+        starter_suit = starter_card[-1]
+
+        # check if 'Q♠' is played
+        if 'Q♠' in trick_cards:
+            self.trick_winner = [player for player, card in self.trick.items() if card == 'Q♠'][0]
+        else:
+            same_suit_cards = [card for card in trick_cards if card[-1] == starter_suit]
+            highest_card = max(same_suit_cards, key=self.card_value)
+            self.trick_winner = [player for player, card in self.trick.items() if card == highest_card][0]
 
         # use player.cards_won to calculate self.hand_winner
         for player in self.players:
@@ -218,16 +242,21 @@ class Hand():
         print('Cards dealt')
         print('Hand has started!')
         print('You are Player_1')
-        print('Your hand is:')
-        self.show_hand(0)
 
         # start loop for 13 tricks here
         for _ in range(13):
+            print('Your hand is: ', self.show_hand(0))
             self.decide_play_order()
-            if self.trick_starter == 'Player_1':
-                print(f'You have the 2♣ so you start the first trick')
-            else:
-                print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
+            if self.trick_counter == 0:
+                if self.trick_starter == 'Player_1':
+                    print(f'You have the 2♣ so you start the first trick')
+                else:
+                    print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
+            # elif self.trick_starter == 'Player_1':
+            #     print(f'You won the last trick so you start the next trick')
+            # elif self.trick_starter != 'Player_1':
+            #     print(f'{self.trick_starter} won the last trick so he starts the next trick')
+
             self.play_hand()
             print('Trick is: ', self.trick)
             self.decide_trick_winner()
@@ -238,3 +267,6 @@ class Hand():
         # end loop for 13 tricks here
                 
         print(f'Hand won by {self.hand_winner}')
+
+
+# players[Player(hand(card1, card2, card3...)), Player(...), Player(...), Player(...)]
