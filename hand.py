@@ -42,8 +42,10 @@ class Hand():
             self.players.append(Player(name))
     
     def deal_cards(self):
-        def get_card_name(card):
-            return card.name
+        suit_order = {'♥': 0, '♠': 1, '♦': 2, '♣': 3}
+
+        def get_card_sort_key(card):
+            return suit_order.get(card.name[-1], len(suit_order)), card.name
 
         for _ in range(13):
             for num in range(4):
@@ -51,7 +53,8 @@ class Hand():
                 self.players[num].hand.append(card_dealt)
 
         for player in self.players:
-            player.hand.sort(key=get_card_name)
+            player.hand = sorted(player.hand, key=get_card_sort_key)
+
 
     def show_hand(self, player_index):
         hand = [card.name for card in self.players[player_index].hand]
