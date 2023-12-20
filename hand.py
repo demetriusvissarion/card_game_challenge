@@ -93,6 +93,9 @@ class Hand():
         player_index = self.player_names.index(player.name)
         # print('player: ', player)
         self.players[player_index].hand = [card for card in self.players[player_index].hand if card.name != card_to_remove]
+
+    def reset_trick(self):
+        self.trick = {'Player_1': '', 'Player_2': '', 'Player_3': '', 'Player_4': ''}
     
     def user_plays_card(self, player):
         print('Player_1, select a card to play: ')
@@ -116,11 +119,16 @@ class Hand():
                         if card[-1] in self.trick[self.trick_starter]:
                             card_number = player_1_hand.index(card)
                             valid_selections[card_number] = card
-            else:
+
+            # if no self.trick choose randomly from all cards
+            if not valid_selections:
                 for card in player_1_hand:
                     card_number = player_1_hand.index(card)
                     valid_selections[card_number] = card 
 
+            print('valid_selections: ', valid_selections)
+            # print('[card_value for card_value in self.trick.values()]: ', [card_value for card_value in self.trick.values()])
+            # sys.exit()
             # print valid card selections (can make this seperate function)
             for card_number, card in valid_selections.items():             
                 print(f'Type {card_number} and \"Enter\" to play card {card}')
@@ -134,6 +142,7 @@ class Hand():
 
         # remove the selected card from the hand
         self.remove_played_card(player_1, selected_card)
+        # self.reset_trick()
 
     def computer_plays_card(self, player):
         player_hand = [card.name for card in player.hand]
@@ -151,7 +160,8 @@ class Hand():
                 for card in player_hand:
                     if card[-1] in self.trick[self.trick_starter]:
                         card_number = player_hand.index(card)
-                        valid_selections[card_number] = card                     
+                        valid_selections[card_number] = card
+                # if                 
                     
             # if no self.trick choose randomly from all cards
             if not valid_selections:
@@ -159,6 +169,7 @@ class Hand():
                     card_number = player_hand.index(card)
                     valid_selections[card_number] = card 
 
+            # change bot_card selection to improve bot play (min() or  )
             bot_card = random.sample(list(valid_selections.values()), 1)[0]
 
         self.trick[player.name] = bot_card
@@ -169,6 +180,7 @@ class Hand():
         # sys.exit()
         # remove the selected card from the hand
         self.remove_played_card(player, bot_card)
+        # self.reset_trick()
 
     def play_hand(self):
         self.trick_counter += 1
@@ -227,12 +239,11 @@ class Hand():
 
     def find_hand_winner(self):
         min_score = 999
-        winner = None
         for player, points in self.score.items():
             if points < min_score:
                 min_score = points
-                winner = player
-        return winner
+                self.hand_winner = player
+        return self.hand_winner
 
 
     def start_hand(self):
@@ -263,6 +274,7 @@ class Hand():
             self.play_hand()
             print('Trick is: ', self.trick)
             self.decide_trick_winner()
+            self.reset_trick()
             if self.trick_counter < 13:
                 print(f'Trick won by {self.trick_winner}, he will start the next trick')
             else:
