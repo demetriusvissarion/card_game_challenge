@@ -199,9 +199,7 @@ class Hand():
             else:
                 player_object = next((obj for obj in self.players if obj.name == player), None)
                 self.computer_plays_card(player_object)
-
         self.trick_counter += 1
-
                 
     def card_value(self, card):
         # order of card values for comparison
@@ -221,13 +219,17 @@ class Hand():
         starter_card = self.trick[self.trick_starter]
         starter_suit = starter_card[-1]
 
-        # check if 'Q♠' is played
-        if 'Q♠' in trick_cards:
-            self.trick_winner = [player for player, card in self.trick.items() if card == 'Q♠'][0]
-        else:
-            same_suit_cards = [card for card in trick_cards if card[-1] == starter_suit]
-            highest_card = max(same_suit_cards, key=self.card_value)
-            self.trick_winner = [player for player, card in self.trick.items() if card == highest_card][0]
+        # # check if 'Q♠' is played
+        # if 'Q♠' in trick_cards:
+        #     self.trick_winner = [player for player, card in self.trick.items() if card == 'Q♠'][0]
+        # else:
+        same_suit_cards = [card for card in trick_cards if card[-1] == starter_suit]
+        highest_card = max(same_suit_cards, key=self.card_value)
+        self.trick_winner = [player for player, card in self.trick.items() if card == highest_card][0]
+
+        # save trick to player.cards_won
+        for key in self.trick:
+            self.players[self.player_names.index(self.trick_winner)].cards_won.append(self.trick[key])
 
         # use player.cards_won to calculate self.hand_winner
         for player in self.players:
@@ -266,10 +268,6 @@ class Hand():
                     print(f'You have the 2♣ so you start the first trick')
                 else:
                     print(f'{self.trick_starter} has the 2♣ so he starts the first trick')
-            # elif self.trick_starter == 'Player_1':
-            #     print(f'You won the last trick so you start the next trick')
-            # elif self.trick_starter != 'Player_1':
-            #     print(f'{self.trick_starter} won the last trick so he starts the next trick')
 
             self.play_hand()
             print('Trick is: ', self.trick)
@@ -279,9 +277,7 @@ class Hand():
                 print(f'Trick won by {self.trick_winner}, he will start the next trick')
             else:
                 print(f'Last trick won by {self.trick_winner}')
+            self.find_hand_winner()
         # end loop for 13 tricks here
-                
-        print(f'Hand won by {self.hand_winner}')
-
 
 # players[Player(hand(card1, card2, card3...)), Player(...), Player(...), Player(...)]

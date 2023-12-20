@@ -13,6 +13,30 @@ while any(score_board.total_score[player] < 100 for player in score_board.total_
     print(f'Hand won by {new_hand.hand_winner}')
     score_board.score_table()
 
+    print('Do you want to play another hand? (y/n)')
+
+    # exception handling and validation
+    while True:
+        try:
+            play_more = int(input("Your selection: "))
+        except ValueError:
+            print("Sorry, I didn't understand that.")
+            #better try again... return to the start of the loop
+            continue
+        if play_more not in ['y', 'Y', 'n', 'N']:
+            print("Not an appropriate choice.")
+            continue
+        else:
+            #we're ready to exit the loop.
+            break
+
+    if play_more.str.lower() == 'y':
+        continue
+    else:
+        #we're ready to exit the loop.
+        break
+
+
 
 # ### Test data
 # test_hand1 = Hand()
