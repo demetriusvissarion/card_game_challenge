@@ -18,22 +18,25 @@ while any(score_board.total_score[player] < 100 for player in score_board.total_
     # exception handling and validation
     while True:
         try:
-            play_more = int(input("Your selection: "))
+            play_more = input("Your selection: ")
         except ValueError:
             print("Sorry, I didn't understand that.")
             #better try again... return to the start of the loop
             continue
-        if play_more not in ['y', 'Y', 'n', 'N']:
-            print("Not an appropriate choice.")
-            continue
-        else:
-            #we're ready to exit the loop.
-            break
+        if play_more in ['y', 'Y', 'n', 'N']:
+            if play_more in ['y', 'Y']:
+                print("Ok, starting another hand")
+                break
+            else:
+                #we're ready to exit the loop.
+                print("Thanks for playing, Bye!")
+                break
 
-    if play_more.str.lower() == 'y':
+    if play_more.lower() == 'y':
+        print('Get ready')
         continue
-    else:
-        #we're ready to exit the loop.
+    if play_more.lower() == 'n':
+        print('Get ready')
         break
 
 
