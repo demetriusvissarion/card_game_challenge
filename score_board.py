@@ -2,9 +2,13 @@ class ScoreBoard:
     def __init__(self):
         self.hands_score = []
         # Initialize a dictionary to store the total score for each player
-        self.total_score = {f'Player_{i}': 0 for i in range(1, 5)}
+        self.total_score = {'Player_1': 0, 'Player_2': 0, 'Player_3': 0, 'Player_4': 0}
+
+    def reset_total_score(self):
+        self.total_score = {'Player_1': 0, 'Player_2': 0, 'Player_3': 0, 'Player_4': 0}
 
     def score_table(self):
+        self.reset_total_score()
         # Print the header row with horizontal lines
         print(f"{'=' * 58}")
         print(f"{'Hand':<13}|{'Player_1':<10}|{'Player_2':<10}|{'Player_3':<10}|{'Player_4':<10}|")
