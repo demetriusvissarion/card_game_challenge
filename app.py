@@ -13,6 +13,7 @@ while not any(score_board.total_score[player] >= 1000 for player in score_board.
     new_hand.start_hand()
     # save hand.score to the ScoreBoard class
     score_board.hands_score.append(new_hand.score)
+    print('score_board.hands_score: ', score_board.hands_score)
     print(f'Hand won by {new_hand.hand_winner}')
     score_board.score_table()
 

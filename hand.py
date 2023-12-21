@@ -113,7 +113,7 @@ class Hand():
             selected_card_index = self.user_card_selection(valid_selections)
         else:
             # if trick has at least one value (it means another player started the trick): 
-            if any(card_value for card_value in self.trick.values()):
+            if any(value for value in self.trick.values()):
                 for card in player_1_hand:
                         # if same suit card(s) in hand,limit possible selections to that
                         if card[-1] in self.trick[self.trick_starter]:
@@ -126,9 +126,8 @@ class Hand():
                     card_number = player_1_hand.index(card)
                     valid_selections[card_number] = card 
 
-            print('valid_selections: ', valid_selections)
-            # print('[card_value for card_value in self.trick.values()]: ', [card_value for card_value in self.trick.values()])
-            # sys.exit()
+            # print('valid_selections: ', valid_selections)
+
             # print valid card selections (can make this seperate function)
             for card_number, card in valid_selections.items():             
                 print(f'Type {card_number} and \"Enter\" to play card {card}')
@@ -211,6 +210,27 @@ class Hand():
         # return the numeric value
         return card_values.get(value, 0)
     
+    def reset_score(self):
+        self.score = {'Player_1': 0, 'Player_2': 0, 'Player_3': 0, 'Player_4': 0}
+    
+    def calculate_score(self):
+        self.reset_score()
+        # print('Before calculations self.score: ', self.score)
+        # use player.cards_won to calculate score
+        # if none of the players has all 13 hearts and the Q♠ (26 points total)
+        for player in self.players:
+            # print(f'{player.name} cards_won: {player.cards_won}')
+            # print('player.name: ', player.name)
+            # print('before self.score[player.name]: ', self.score[player.name])
+            for card in player.cards_won:
+                if card == 'Q♠':
+                    print('Q♠ hit')
+                    self.score[player.name] += 13
+                elif card[-1] == '♥':
+                    print('♥ hit')
+                    self.score[player.name] += 1
+            # print('after self.score[player.name]: ', self.score[player.name])
+        
     # find trick winner and save score
     def decide_trick_winner(self):
         trick_cards = self.trick.values()
@@ -227,19 +247,10 @@ class Hand():
         for player, card in self.trick.items():
             trick_winner_index = self.player_names.index(self.trick_winner)
             self.players[trick_winner_index].cards_won.append(card)
-
-        # use player.cards_won to calculate self.hand_winner
-        # if none of the players has all 13 hearts and the 
-        for player in self.players:
-            for card in player.cards_won:
-                if card == 'Q♠':
-                    self.score[player.name] += 13
-                elif card[-1] == '♥':
-                    self.score[player.name] += 1
         
         print('len(self.players[0].cards_won): ', len(self.players[0].cards_won))
         print('len(self.players[1].cards_won): ', len(self.players[1].cards_won))
-        print('len(self.players[1].cards_won): ', len(self.players[1].cards_won))
+        print('len(self.players[2].cards_won): ', len(self.players[2].cards_won))
         print('len(self.players[3].cards_won): ', len(self.players[3].cards_won))
 
     def find_hand_winner(self):
@@ -250,8 +261,8 @@ class Hand():
                 self.hand_winner = player
         return self.hand_winner
 
-
     def start_hand(self):
+        # print('self.score: ', self.score)
         self.create_deck()
         self.shuffle()
         print('Cards shuffled')
@@ -275,6 +286,7 @@ class Hand():
             self.play_hand()
             print('Trick is: ', self.trick)
             self.decide_trick_winner()
+            self.calculate_score()
             self.reset_trick()
             if self.trick_counter < 13:
                 print(f'Trick won by {self.trick_winner}, he will start the next trick')
