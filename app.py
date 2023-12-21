@@ -1,7 +1,10 @@
 from hand import Hand
 from score_board import ScoreBoard
 
+
 score_board = ScoreBoard()
+print('score_board.hands_score: ', score_board.hands_score)
+print('score_board.total_score: ', score_board.total_score)
 
 # add here while loop to check if any players reached 100 score and if only one player has minimum score
 while any(score_board.total_score[player] < 100 for player in score_board.total_score) and \
@@ -36,7 +39,6 @@ while any(score_board.total_score[player] < 100 for player in score_board.total_
         print('Get ready')
         continue
     if play_more.lower() == 'n':
-        print('Get ready')
         break
 
 

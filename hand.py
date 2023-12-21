@@ -219,19 +219,17 @@ class Hand():
         starter_card = self.trick[self.trick_starter]
         starter_suit = starter_card[-1]
 
-        # # check if 'Q♠' is played
-        # if 'Q♠' in trick_cards:
-        #     self.trick_winner = [player for player, card in self.trick.items() if card == 'Q♠'][0]
-        # else:
         same_suit_cards = [card for card in trick_cards if card[-1] == starter_suit]
         highest_card = max(same_suit_cards, key=self.card_value)
         self.trick_winner = [player for player, card in self.trick.items() if card == highest_card][0]
 
         # save trick to player.cards_won
-        for key in self.trick:
-            self.players[self.player_names.index(self.trick_winner)].cards_won.append(self.trick[key])
+        for player, card in self.trick.items():
+            trick_winner_index = self.player_names.index(self.trick_winner)
+            self.players[trick_winner_index].cards_won.append(card)
 
         # use player.cards_won to calculate self.hand_winner
+        # if none of the players has all 13 hearts and the 
         for player in self.players:
             for card in player.cards_won:
                 if card == 'Q♠':
