@@ -1,56 +1,50 @@
 from hand import Hand
 from score_board import ScoreBoard
 
+class App:
+    def __init__(self):
+        self.score_board = ScoreBoard()
+        self.hand_counter = 1
 
-score_board = ScoreBoard()
-# print('score_board.hands_score: ', score_board.hands_score)
-# print('score_board.total_score: ', score_board.total_score)
+    def run(self):
+        # add here while loop to check if any players reached 100 score and if only one player has minimum score
+        while not any(self.score_board.total_score[player] >= 1000 for player in self.score_board.total_score) or sum(self.score_board.total_score[player] == min(self.score_board.total_score.values()) for player in self.score_board.total_score) != 1:
+            new_hand = Hand()
+            new_hand.start_hand(self.hand_counter)
+            # save hand.score to the ScoreBoard class
+            self.score_board.hands_score.append(new_hand.score)
+            print('self.score_board.hands_score: ', self.score_board.hands_score)
+            print(f'Hand won by {new_hand.hand_winner}')
+            self.score_board.score_table()
 
-# add here while loop to check if any players reached 100 score and if only one player has minimum score
-# while any(score_board.total_score[player] < 1000 for player in score_board.total_score) and sum(score_board.total_score[player] == min(score_board.total_score.values()) for player in score_board.total_score) != 1:
-while not any(score_board.total_score[player] >= 1000 for player in score_board.total_score) or sum(score_board.total_score[player] == min(score_board.total_score.values()) for player in score_board.total_score) != 1:
-    new_hand = Hand()
-    new_hand.start_hand()
-    # save hand.score to the ScoreBoard class
-    score_board.hands_score.append(new_hand.score)
-    print('score_board.hands_score: ', score_board.hands_score)
-    print(f'Hand won by {new_hand.hand_winner}')
-    score_board.score_table()
+            print('Do you want to play another hand? (y/n)')
 
-    print('Do you want to play another hand? (y/n)')
+            # exception handling and validation
+            while True:
+                try:
+                    play_more = input("Your selection: ")
+                except ValueError:
+                    print("Sorry, I didn't understand that.")
+                    #better try again... return to the start of the loop
+                    continue
+                if play_more not in ['y', 'Y', 'n', 'N']:
+                    print("Not an appropriate choice.")
+                    continue
+                else:
+                    #we're ready to exit the loop.
+                    break
 
-    # exception handling and validation
-    while True:
-        try:
-            play_more = input("Your selection: ")
-        except ValueError:
-            print("Sorry, I didn't understand that.")
-            #better try again... return to the start of the loop
-            continue
-        if play_more not in ['y', 'Y', 'n', 'N']:
-            print("Not an appropriate choice.")
-            continue
-        else:
-            #we're ready to exit the loop.
-            break
+            if play_more.lower() == 'y':
+                print("Ok, starting another hand")
+                print('Get ready')
+                if self.hand_counter < 4:
+                    self.hand_counter += 1
+                else:
+                    self.hand_counter = 0
+                # continue
+            if play_more.lower() == 'n':
+                print("Thanks for playing, Bye!")
+                break
 
-    if play_more.lower() == 'y':
-        print("Ok, starting another hand")
-        print('Get ready')
-        # continue
-    if play_more.lower() == 'n':
-        print("Thanks for playing, Bye!")
-        break
-
-
-
-# ### Test data
-# test_hand1 = Hand()
-# test_hand2 = Hand()
-# # Create some hands and add them to the ScoreBoard
-# test_hand1.score = {'Player_1': 10, 'Player_2': 2, 'Player_3': 0, 'Player_4': 14}
-# test_hand2.score = {'Player_1': 6, 'Player_2': 13, 'Player_3': 4, 'Player_4': 3}
-# score_board.hands_score.extend([test_hand1, test_hand2])
-
-# # Print the score table
-# score_board.score_table()
+app = App()
+app.run()

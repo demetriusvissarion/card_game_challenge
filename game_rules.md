@@ -38,6 +38,7 @@ Winner of the game:
 Notes:
  * reset all variables at the end of a hand? => shouldn't be needed if I use a new instance of Hand class for each hand, and keep score in a different ScoreBoard class
 
-21/12/2023 To fix:
- - score per hand is too high, sum many times > 100, sum should be always 26
- - 
+21/12/2023 To fix/add:
+ - fix score per hand is too high, sum many times > 100, sum should be always 26
+ - fix total_score does not reset between hands and ends up too big
+ - add 'pass 3 cards' rule in app.py

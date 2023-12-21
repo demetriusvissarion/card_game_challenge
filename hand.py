@@ -54,6 +54,20 @@ class Hand():
 
         for player in self.players:
             player.hand = sorted(player.hand, key=get_card_sort_key)
+    
+    def pass_three_cards(self, hand_counter):
+        if hand_counter == 1:
+            # pass 3 cards to right player (-1) => use list oredering?
+            pass
+        if hand_counter == 2:
+            # pass 3 cards to left player (+1) => use list oredering?
+            pass
+        if hand_counter == 3:
+            # pass 3 cards to front player (-2 / +2) => use list oredering?
+            pass
+        if hand_counter == 4:
+            # don't pass any cards
+            pass
 
 
     def show_hand(self, player_index):
@@ -174,12 +188,7 @@ class Hand():
         self.trick[player.name] = bot_card
         print(f'{player.name} played the card: {bot_card}')
         
-        # print('bot_card: ', bot_card)
-        # print('self.players[player_index].hand: ', self.players[player_index].hand)
-        # sys.exit()
-        # remove the selected card from the hand
         self.remove_played_card(player, bot_card)
-        # self.reset_trick()
 
     def play_hand(self):
         self.trick_counter += 1
@@ -253,7 +262,7 @@ class Hand():
         print('len(self.players[2].cards_won): ', len(self.players[2].cards_won))
         print('len(self.players[3].cards_won): ', len(self.players[3].cards_won))
 
-    def find_hand_winner(self):
+    def decide_hand_winner(self):
         min_score = 999
         for player, points in self.score.items():
             if points < min_score:
@@ -261,13 +270,15 @@ class Hand():
                 self.hand_winner = player
         return self.hand_winner
 
-    def start_hand(self):
+    def start_hand(self, hand_counter):
         # print('self.score: ', self.score)
         self.create_deck()
         self.shuffle()
         print('Cards shuffled')
         self.create_players()
         self.deal_cards()
+
+        self.pass_three_cards(hand_counter)
 
         print('Cards dealt')
         print('Hand has started!')
@@ -292,7 +303,7 @@ class Hand():
                 print(f'Trick won by {self.trick_winner}, he will start the next trick')
             else:
                 print(f'Last trick won by {self.trick_winner}')
-            self.find_hand_winner()
+            self.decide_hand_winner()
         # end loop for 13 tricks here
 
 # players[Player(hand(card1, card2, card3...)), Player(...), Player(...), Player(...)]
