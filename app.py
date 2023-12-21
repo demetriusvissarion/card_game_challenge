@@ -3,12 +3,12 @@ from score_board import ScoreBoard
 
 
 score_board = ScoreBoard()
-print('score_board.hands_score: ', score_board.hands_score)
-print('score_board.total_score: ', score_board.total_score)
+# print('score_board.hands_score: ', score_board.hands_score)
+# print('score_board.total_score: ', score_board.total_score)
 
 # add here while loop to check if any players reached 100 score and if only one player has minimum score
-while any(score_board.total_score[player] < 100 for player in score_board.total_score) and \
-    sum(score_board.total_score[player] == min(score_board.total_score.values()) for player in score_board.total_score) > 1:
+# while any(score_board.total_score[player] < 1000 for player in score_board.total_score) and sum(score_board.total_score[player] == min(score_board.total_score.values()) for player in score_board.total_score) != 1:
+while not any(score_board.total_score[player] >= 1000 for player in score_board.total_score) or sum(score_board.total_score[player] == min(score_board.total_score.values()) for player in score_board.total_score) != 1:
     new_hand = Hand()
     new_hand.start_hand()
     # save hand.score to the ScoreBoard class
@@ -26,19 +26,19 @@ while any(score_board.total_score[player] < 100 for player in score_board.total_
             print("Sorry, I didn't understand that.")
             #better try again... return to the start of the loop
             continue
-        if play_more in ['y', 'Y', 'n', 'N']:
-            if play_more in ['y', 'Y']:
-                print("Ok, starting another hand")
-                break
-            else:
-                #we're ready to exit the loop.
-                print("Thanks for playing, Bye!")
-                break
+        if play_more not in ['y', 'Y', 'n', 'N']:
+            print("Not an appropriate choice.")
+            continue
+        else:
+            #we're ready to exit the loop.
+            break
 
     if play_more.lower() == 'y':
+        print("Ok, starting another hand")
         print('Get ready')
-        continue
+        # continue
     if play_more.lower() == 'n':
+        print("Thanks for playing, Bye!")
         break
 
 

@@ -237,10 +237,10 @@ class Hand():
                 elif card[-1] == '♥':
                     self.score[player.name] += 1
         
-        print('self.players[0].cards_won: ', self.players[0].cards_won)
-        print('self.players[1].cards_won: ', self.players[1].cards_won)
-        print('self.players[2].cards_won: ', self.players[2].cards_won)
-        print('self.players[3].cards_won: ', self.players[3].cards_won)
+        print('len(self.players[0].cards_won): ', len(self.players[0].cards_won))
+        print('len(self.players[1].cards_won): ', len(self.players[1].cards_won))
+        print('len(self.players[1].cards_won): ', len(self.players[1].cards_won))
+        print('len(self.players[3].cards_won): ', len(self.players[3].cards_won))
 
     def find_hand_winner(self):
         min_score = 999
