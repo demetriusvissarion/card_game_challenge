@@ -43,9 +43,12 @@ class Hand():
     
     def deal_cards(self):
         suit_order = {'♥': 0, '♠': 1, '♦': 2, '♣': 3}
+        card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
 
         def get_card_sort_key(card):
-            return suit_order.get(card.name[-1], len(suit_order)), card.name
+            suit_key = suit_order.get(card.name[-1], len(suit_order))
+            value_key = card_values.get(card.name[:-1], 0)
+            return suit_key, value_key, card.name
 
         for _ in range(13):
             for num in range(4):
@@ -56,23 +59,77 @@ class Hand():
             player.hand = sorted(player.hand, key=get_card_sort_key)
     
     def pass_three_cards(self, hand_counter):
+        valid_selections = {}
+
+        # Hand 1: pass 3 cards to the opponent on your right: (the one before you, example player_2 passes to player_1)
         if hand_counter == 1:
-            # pass 3 cards to right player (-1) => use list oredering?
-            print('Select 3 cards from your hand to pass to the player on tour right')
-            # Player_1: show
+            # Player_1:
+            # pass 3 cards to right player (-1)
+            print('Select 3 cards from your hand to pass to the player on your right')
             for card in self.players[0].hand:
-                card_index = self.players[0].hand.index(card)           
-                print(f'Type {card_index} and \"Enter\" to play card {card}')
-            # Player_2
-            # Player_3
-            # Player_4
-            pass
+                card_index = self.players[0].hand.index(card)
+                valid_selections[card_index] = card           
+                print(f'Type {card_index} and \"Enter\" to play card {card.name}')
+            print('Select the first card')
+            first_selection_index = self.user_card_selection(valid_selections)
+            print('Select the second card')
+            second_selection_index = self.user_card_selection(valid_selections)
+            print('Select the third card')
+            third_selection_index = self.user_card_selection(valid_selections)
+            player_1_selected_cards = [self.players[0].hand[first_selection_index], self.players[0].hand[second_selection_index], self.players[0].
+            hand[third_selection_index]]
+            print(f'Cards {[card.name for card in player_1_selected_cards]} will be passed to Player_4')
+            player = self.players[0]
+            # remove selected cards from hand
+            for card in player_1_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_2:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_2_hand = self.players[1].hand
+            player_2_selected_cards = random.sample(player_2_hand, 3)
+            # remove selected cards from hand
+            for card in player_2_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_3:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_3_hand = self.players[2].hand
+            player_3_selected_cards = random.sample(player_3_hand, 3)
+            # remove selected cards from hand
+            for card in player_3_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_4:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_4_hand = self.players[3].hand
+            player_4_selected_cards = random.sample(player_4_hand, 3)
+            # remove selected cards from hand
+            for card in player_4_selected_cards:
+                self.remove_played_card(player, card.name)
+            
+            # add all players selected cards to the previous player hand
+            # Player_1 => Player_4
+            self.players[3].hand.append(player_1_selected_cards)
+            # Player_2 => Player_1
+            self.players[0].hand.append(player_2_selected_cards)
+            print(f'Player_1 you received cards {[card.name for card in player_2_selected_cards]} from Player_2')
+            # Player_3 => Player_2
+            self.players[1].hand.append(player_3_selected_cards)
+            # Player_4 => Player_3
+            self.players[2].hand.append(player_3_selected_cards)
+                
+        # Hand 2: pass 3 cards to the opponent on your left: (the one after you, example player_2 passes to player_3)
         if hand_counter == 2:
-            # pass 3 cards to left player (+1) => use list oredering?
+            # pass 3 cards to left player (+1)
             pass
+
+        # Hand 3: pass 3 cards to the opponent in front of you: (the one not after you or before you, example player_2 passes to player_4)
         if hand_counter == 3:
-            # pass 3 cards to front player (-2 / +2) => use list oredering?
+            # pass 3 cards to front player (-2 / +2)
             pass
+
+        # Hand 4: don't pass any cards
         if hand_counter == 4:
             # don't pass any cards
             pass
@@ -217,15 +274,15 @@ class Hand():
                 self.computer_plays_card(player_object)
         self.trick_counter += 1
                 
-    def card_value(self, card):
-        # order of card values for comparison
-        card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    # def card_value(self, card):
+    #     # order of card values for comparison
+    #     card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
 
-        # get card value from the card string
-        value = card[:-1]
+    #     # get card value from the card string
+    #     value = card[:-1]
 
-        # return the numeric value
-        return card_values.get(value, 0)
+    #     # return the numeric value
+    #     return card_values.get(value, 0)
     
     def reset_score(self):
         self.score = {'Player_1': 0, 'Player_2': 0, 'Player_3': 0, 'Player_4': 0}
@@ -285,10 +342,10 @@ class Hand():
         print('Cards shuffled')
         self.create_players()
         self.deal_cards()
+        print('Cards dealt')
 
         self.pass_three_cards(hand_counter)
 
-        print('Cards dealt')
         print('Hand has started!')
         print('You are Player_1')
 
