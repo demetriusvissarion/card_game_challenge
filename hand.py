@@ -58,6 +58,14 @@ class Hand():
     def pass_three_cards(self, hand_counter):
         if hand_counter == 1:
             # pass 3 cards to right player (-1) => use list oredering?
+            print('Select 3 cards from your hand to pass to the player on tour right')
+            # Player_1: show
+            for card in self.players[0].hand:
+                card_index = self.players[0].hand.index(card)           
+                print(f'Type {card_index} and \"Enter\" to play card {card}')
+            # Player_2
+            # Player_3
+            # Player_4
             pass
         if hand_counter == 2:
             # pass 3 cards to left player (+1) => use list oredering?
