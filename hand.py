@@ -136,8 +136,10 @@ class Hand():
 
 
     def show_hand(self, player_index):
-        hand = [card.name for card in self.players[player_index].hand]
-        return hand
+        print(f'self.players[player_index].hand[0].name: {self.players[player_index].hand[0].name}')
+        player_hand = self.players[player_index].hand
+        cards_in_hand = [card.name for card in player_hand]
+        return cards_in_hand
 
     def decide_play_order(self):
         if self.trick_counter == 0:

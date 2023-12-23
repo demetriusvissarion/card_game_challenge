@@ -42,3 +42,7 @@ Notes:
  - fix score per hand is too high, sum many times > 100, sum should be always 26
  - fix total_score does not reset between hands and ends up too big
  - add 'pass 3 cards' rule in app.py
+
+ 22/12/2023 To fix/add:
+ - fix show_hand error 
+ AttributeError: 'list' object has no attribute 'name'
