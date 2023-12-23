@@ -40,8 +40,8 @@ class Hand():
     def create_players(self):
         for name in self.player_names:
             self.players.append(Player(name))
-    
-    def deal_cards(self):
+
+    def sort_cards(self):
         suit_order = {'♥': 0, '♠': 1, '♦': 2, '♣': 3}
         card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
 
@@ -50,13 +50,15 @@ class Hand():
             value_key = card_values.get(card.name[:-1], 0)
             return suit_key, value_key, card.name
 
+        for player in self.players:
+            player.hand = sorted(player.hand, key=get_card_sort_key)
+    
+    def deal_cards(self):
         for _ in range(13):
             for num in range(4):
                 card_dealt = self.deck.pop(0)
                 self.players[num].hand.append(card_dealt)
-
-        for player in self.players:
-            player.hand = sorted(player.hand, key=get_card_sort_key)
+        self.sort_cards()
     
     def pass_three_cards(self, hand_counter):
         valid_selections = {}
@@ -110,14 +112,20 @@ class Hand():
             
             # add all players selected cards to the previous player hand
             # Player_1 => Player_4
-            self.players[3].hand.append(player_1_selected_cards)
+            for card in player_1_selected_cards:
+                self.players[3].hand.append(card)
             # Player_2 => Player_1
-            self.players[0].hand.append(player_2_selected_cards)
+            for card in player_2_selected_cards:
+                self.players[0].hand.append(card)
             print(f'Player_1 you received cards {[card.name for card in player_2_selected_cards]} from Player_2')
             # Player_3 => Player_2
-            self.players[1].hand.append(player_3_selected_cards)
+            for card in player_3_selected_cards:
+                self.players[1].hand.append(card)
             # Player_4 => Player_3
-            self.players[2].hand.append(player_3_selected_cards)
+            for card in player_4_selected_cards:
+                self.players[2].hand.append(card)
+            
+            self.sort_cards()
                 
         # Hand 2: pass 3 cards to the opponent on your left: (the one after you, example player_2 passes to player_3)
         if hand_counter == 2:
@@ -136,7 +144,6 @@ class Hand():
 
 
     def show_hand(self, player_index):
-        print(f'self.players[player_index].hand[0].name: {self.players[player_index].hand[0].name}')
         player_hand = self.players[player_index].hand
         cards_in_hand = [card.name for card in player_hand]
         return cards_in_hand
@@ -276,15 +283,15 @@ class Hand():
                 self.computer_plays_card(player_object)
         self.trick_counter += 1
                 
-    # def card_value(self, card):
-    #     # order of card values for comparison
-    #     card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    def card_value(self, card):
+        # order of card values for comparison
+        card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
 
-    #     # get card value from the card string
-    #     value = card[:-1]
+        # get card value from the card string
+        value = card[:-1]
 
-    #     # return the numeric value
-    #     return card_values.get(value, 0)
+        # return the numeric value
+        return card_values.get(value, 0)
     
     def reset_score(self):
         self.score = {'Player_1': 0, 'Player_2': 0, 'Player_3': 0, 'Player_4': 0}
@@ -323,11 +330,6 @@ class Hand():
         for player, card in self.trick.items():
             trick_winner_index = self.player_names.index(self.trick_winner)
             self.players[trick_winner_index].cards_won.append(card)
-        
-        print('len(self.players[0].cards_won): ', len(self.players[0].cards_won))
-        print('len(self.players[1].cards_won): ', len(self.players[1].cards_won))
-        print('len(self.players[2].cards_won): ', len(self.players[2].cards_won))
-        print('len(self.players[3].cards_won): ', len(self.players[3].cards_won))
 
     def decide_hand_winner(self):
         min_score = 999
