@@ -28,6 +28,7 @@ class Hand():
         self.trick_winner = ''
         self.hand_winner = None
         self.score = {'Player_1': 0, 'Player_2': 0, 'Player_3': 0, 'Player_4': 0}
+        self.hearts_are_broken = False
     
     def create_deck(self):
         for suit in self.suits:
@@ -337,12 +338,20 @@ class Hand():
                         if card[-1] in self.trick[self.trick_starter]:
                             card_number = player_1_hand.index(card)
                             valid_selections[card_number] = card
+            
+            # if trick has at least one value and not "Hearts are broken"
+            if any(value for value in self.trick.values()) and not self.hearts_are_broken:
+                for card in player_1_hand:
+                        # if same suit card(s) in hand,limit possible selections to that
+                        if card[-1] in self.trick[self.trick_starter] and card[-1] != '♥':
+                            card_number = player_1_hand.index(card)
+                            valid_selections[card_number] = card
 
-            # if no self.trick choose randomly from all cards
+            # if no self.trick or no same suit card(s) in hand, choose randomly from all cards (if heart played here it will trigger "Hearts are broken")
             if not valid_selections:
                 for card in player_1_hand:
                     card_number = player_1_hand.index(card)
-                    valid_selections[card_number] = card 
+                    valid_selections[card_number] = card
 
             # print('valid_selections: ', valid_selections)
 
@@ -356,6 +365,9 @@ class Hand():
         selected_card = player_1_hand[selected_card_index]
         self.trick[player_1.name] = selected_card
         print(f'You played: {selected_card}')
+        if selected_card[-1] == '♥' and not self.hearts_are_broken:
+            print("Hearts are broken!")
+            self.hearts_are_broken = True
 
         # remove the selected card from the hand
         self.remove_played_card(player_1, selected_card)
@@ -437,10 +449,10 @@ class Hand():
             # print('before self.score[player.name]: ', self.score[player.name])
             for card in player.cards_won:
                 if card == 'Q♠':
-                    print('Q♠ hit')
+                    # print('<dev> Q♠ hit')
                     self.score[player.name] += 13
                 elif card[-1] == '♥':
-                    print('♥ hit')
+                    # print('<dev> ♥ hit')
                     self.score[player.name] += 1
             # print('after self.score[player.name]: ', self.score[player.name])
         
@@ -486,9 +498,9 @@ class Hand():
         # start loop for 13 tricks here
         for _ in range(13):
             print('Your hand is: ', self.show_hand(0))
-            print('Player_2 hand is: ', self.show_hand(1))
-            print('Player_3 hand is: ', self.show_hand(2))
-            print('Player_4 hand is: ', self.show_hand(3))
+            # print('<dev> Player_2 hand is: ', self.show_hand(1))
+            # print('<dev> Player_3 hand is: ', self.show_hand(2))
+            # print('<dev> Player_4 hand is: ', self.show_hand(3))
             self.decide_play_order()
             if self.trick_counter == 0:
                 if self.trick_starter == 'Player_1':
@@ -499,13 +511,13 @@ class Hand():
             self.play_hand()
             print('Trick is: ', self.trick)
             self.decide_trick_winner()
-            self.calculate_score()
             self.reset_trick()
             if self.trick_counter < 13:
                 print(f'Trick won by {self.trick_winner}, he will start the next trick')
             else:
                 print(f'Last trick won by {self.trick_winner}')
             self.decide_hand_winner()
+        self.calculate_score()
         # end loop for 13 tricks here
 
 # players[Player(hand(card1, card2, card3...)), Player(...), Player(...), Player(...)]
