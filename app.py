@@ -40,7 +40,7 @@ class App:
                 if self.hand_counter < 4:
                     self.hand_counter += 1
                 else:
-                    self.hand_counter = 0
+                    self.hand_counter = 1
                 # continue
             if play_more.lower() == 'n':
                 print("Thanks for playing, Bye!")

@@ -156,27 +156,30 @@ class Hand():
 
             # Player_2:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_2 = self.players[1]
             player_2_hand = self.players[1].hand
             player_2_selected_cards = random.sample(player_2_hand, 3)
             # remove selected cards from hand
             for card in player_2_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_2, card.name)
 
             # Player_3:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_3 = self.players[2]
             player_3_hand = self.players[2].hand
             player_3_selected_cards = random.sample(player_3_hand, 3)
             # remove selected cards from hand
             for card in player_3_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_3, card.name)
 
             # Player_4:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_4 = self.players[3]
             player_4_hand = self.players[3].hand
             player_4_selected_cards = random.sample(player_4_hand, 3)
             # remove selected cards from hand
             for card in player_4_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_4, card.name)
             
             # add all players selected cards to the next player hand
             # Player_1 => Player_2
@@ -221,27 +224,30 @@ class Hand():
 
             # Player_2:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_2 = self.players[1]
             player_2_hand = self.players[1].hand
             player_2_selected_cards = random.sample(player_2_hand, 3)
             # remove selected cards from hand
             for card in player_2_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_2, card.name)
 
             # Player_3:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_3 = self.players[2]
             player_3_hand = self.players[2].hand
             player_3_selected_cards = random.sample(player_3_hand, 3)
             # remove selected cards from hand
             for card in player_3_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_3, card.name)
 
             # Player_4:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_4 = self.players[3]
             player_4_hand = self.players[3].hand
             player_4_selected_cards = random.sample(player_4_hand, 3)
             # remove selected cards from hand
             for card in player_4_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_4, card.name)
             
             # add all players selected cards to the next player hand
             # Player_1 => Player_3
