@@ -88,27 +88,30 @@ class Hand():
 
             # Player_2:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_2 = self.players[1]
             player_2_hand = self.players[1].hand
             player_2_selected_cards = random.sample(player_2_hand, 3)
             # remove selected cards from hand
             for card in player_2_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_2, card.name)
 
             # Player_3:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_3 = self.players[2]
             player_3_hand = self.players[2].hand
             player_3_selected_cards = random.sample(player_3_hand, 3)
             # remove selected cards from hand
             for card in player_3_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_3, card.name)
 
             # Player_4:
             # select 3 random cards to pass (later change this to make the game harder)
+            player_4 = self.players[3]
             player_4_hand = self.players[3].hand
             player_4_selected_cards = random.sample(player_4_hand, 3)
             # remove selected cards from hand
             for card in player_4_selected_cards:
-                self.remove_played_card(player, card.name)
+                self.remove_played_card(player_4, card.name)
             
             # add all players selected cards to the previous player hand
             # Player_1 => Player_4
@@ -477,6 +480,9 @@ class Hand():
         # start loop for 13 tricks here
         for _ in range(13):
             print('Your hand is: ', self.show_hand(0))
+            print('Player_2 hand is: ', self.show_hand(1))
+            print('Player_3 hand is: ', self.show_hand(2))
+            print('Player_4 hand is: ', self.show_hand(3))
             self.decide_play_order()
             if self.trick_counter == 0:
                 if self.trick_starter == 'Player_1':
