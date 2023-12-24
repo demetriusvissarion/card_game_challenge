@@ -126,16 +126,137 @@ class Hand():
                 self.players[2].hand.append(card)
             
             self.sort_cards()
+            valid_selections = {}
                 
         # Hand 2: pass 3 cards to the opponent on your left: (the one after you, example player_2 passes to player_3)
         if hand_counter == 2:
+            # Player_1:
             # pass 3 cards to left player (+1)
-            pass
+            print('Select 3 cards from your hand to pass to the player on your left')
+            for card in self.players[0].hand:
+                card_index = self.players[0].hand.index(card)
+                valid_selections[card_index] = card           
+                print(f'Type {card_index} and \"Enter\" to play card {card.name}')
+            print('Select the first card')
+            first_selection_index = self.user_card_selection(valid_selections)
+            print('Select the second card')
+            second_selection_index = self.user_card_selection(valid_selections)
+            print('Select the third card')
+            third_selection_index = self.user_card_selection(valid_selections)
+            player_1_selected_cards = [self.players[0].hand[first_selection_index], self.players[0].hand[second_selection_index], self.players[0].
+            hand[third_selection_index]]
+            print(f'Cards {[card.name for card in player_1_selected_cards]} will be passed to Player_2')
+            player = self.players[0]
+            # remove selected cards from hand
+            for card in player_1_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_2:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_2_hand = self.players[1].hand
+            player_2_selected_cards = random.sample(player_2_hand, 3)
+            # remove selected cards from hand
+            for card in player_2_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_3:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_3_hand = self.players[2].hand
+            player_3_selected_cards = random.sample(player_3_hand, 3)
+            # remove selected cards from hand
+            for card in player_3_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_4:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_4_hand = self.players[3].hand
+            player_4_selected_cards = random.sample(player_4_hand, 3)
+            # remove selected cards from hand
+            for card in player_4_selected_cards:
+                self.remove_played_card(player, card.name)
+            
+            # add all players selected cards to the next player hand
+            # Player_1 => Player_2
+            for card in player_1_selected_cards:
+                self.players[1].hand.append(card)
+            # Player_2 => Player_3
+            for card in player_2_selected_cards:
+                self.players[2].hand.append(card)
+            # Player_3 => Player_4
+            for card in player_3_selected_cards:
+                self.players[3].hand.append(card)
+            # Player_4 => Player_1
+            for card in player_4_selected_cards:
+                self.players[0].hand.append(card)
+            print(f'Player_1 you received cards {[card.name for card in player_4_selected_cards]} from Player_4')
+            
+            self.sort_cards()
+            valid_selections = {}
 
         # Hand 3: pass 3 cards to the opponent in front of you: (the one not after you or before you, example player_2 passes to player_4)
         if hand_counter == 3:
+            # Player_1:
             # pass 3 cards to front player (-2 / +2)
-            pass
+            print('Select 3 cards from your hand to pass to the player in front of you')
+            for card in self.players[0].hand:
+                card_index = self.players[0].hand.index(card)
+                valid_selections[card_index] = card           
+                print(f'Type {card_index} and \"Enter\" to play card {card.name}')
+            print('Select the first card')
+            first_selection_index = self.user_card_selection(valid_selections)
+            print('Select the second card')
+            second_selection_index = self.user_card_selection(valid_selections)
+            print('Select the third card')
+            third_selection_index = self.user_card_selection(valid_selections)
+            player_1_selected_cards = [self.players[0].hand[first_selection_index], self.players[0].hand[second_selection_index], self.players[0].
+            hand[third_selection_index]]
+            print(f'Cards {[card.name for card in player_1_selected_cards]} will be passed to Player_3')
+            player = self.players[0]
+            # remove selected cards from hand
+            for card in player_1_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_2:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_2_hand = self.players[1].hand
+            player_2_selected_cards = random.sample(player_2_hand, 3)
+            # remove selected cards from hand
+            for card in player_2_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_3:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_3_hand = self.players[2].hand
+            player_3_selected_cards = random.sample(player_3_hand, 3)
+            # remove selected cards from hand
+            for card in player_3_selected_cards:
+                self.remove_played_card(player, card.name)
+
+            # Player_4:
+            # select 3 random cards to pass (later change this to make the game harder)
+            player_4_hand = self.players[3].hand
+            player_4_selected_cards = random.sample(player_4_hand, 3)
+            # remove selected cards from hand
+            for card in player_4_selected_cards:
+                self.remove_played_card(player, card.name)
+            
+            # add all players selected cards to the next player hand
+            # Player_1 => Player_3
+            for card in player_1_selected_cards:
+                self.players[2].hand.append(card)
+            # Player_2 => Player_4
+            for card in player_2_selected_cards:
+                self.players[3].hand.append(card)
+            # Player_3 => Player_1
+            for card in player_3_selected_cards:
+                self.players[0].hand.append(card)
+            print(f'Player_1 you received cards {[card.name for card in player_4_selected_cards]} from Player_4')
+            # Player_4 => Player_2
+            for card in player_4_selected_cards:
+                self.players[1].hand.append(card)
+            
+            self.sort_cards()
+            valid_selections = {}
 
         # Hand 4: don't pass any cards
         if hand_counter == 4:

@@ -43,6 +43,9 @@ Notes:
  - fix total_score does not reset between hands and ends up too big
  - add 'pass 3 cards' rule in app.py
 
- 22/12/2023 To fix/add:
+22/12/2023 To fix/add:
  - fix show_hand error 
  AttributeError: 'list' object has no attribute 'name'
+
+23/12/2023 To fix/add:
+ - refactoring pass_three_cards hand 1 => not possible now, try again at the end
