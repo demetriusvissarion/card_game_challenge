@@ -13,7 +13,7 @@ class App:
             new_hand.start_hand(self.hand_counter)
             # save hand.score to the ScoreBoard class
             self.score_board.hands_score.append(new_hand.score)
-            print('self.score_board.hands_score: ', self.score_board.hands_score)
+            # print('self.score_board.hands_score: ', self.score_board.hands_score)
             print(f'Hand won by {new_hand.hand_winner}')
             self.score_board.score_table()
 

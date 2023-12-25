@@ -20,12 +20,12 @@ Full rules implemented:
 * (optionally, since it's absence won't take much away from the game) 3 cards are passed between players at the start of each round
 * Hearts can only be played if no card matching the leading suit is playable - counts as "Hearts are broken"
 * Hearts can only lead once broken, or if hand only has Hearts in it
-
 * 26 points scored by everyone else if one player gets all Hearts and Q Spades
-
 ## Bonus
 Begin adding some intelligent play to the "Bot" players e.g. (not necessarily in order):
-* Try to avoid winning any tricks
+* Try to avoid winning any tricks (players pass the 3 highest cards, and play only the lowest cards)
+
+
 * Throw away Q Spades if ever possible
 * Don't lead something like Q Spades or high Hearts if possible
 

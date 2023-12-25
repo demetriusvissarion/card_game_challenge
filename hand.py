@@ -11,6 +11,9 @@ class Hand():
         self.numbers = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
         self.player_names = ['Player_1', 'Player_2', 'Player_3', 'Player_4']
 
+        self.suit_order = {'♥': 0, '♠': 1, '♦': 2, '♣': 3}
+        self.card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+
         # list of player objects:
         self.players = []
 
@@ -43,16 +46,26 @@ class Hand():
             self.players.append(Player(name))
 
     def sort_cards(self):
-        suit_order = {'♥': 0, '♠': 1, '♦': 2, '♣': 3}
-        card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-
         def get_card_sort_key(card):
-            suit_key = suit_order.get(card.name[-1], len(suit_order))
-            value_key = card_values.get(card.name[:-1], 0)
+            suit_key = self.suit_order.get(card.name[-1], len(self.suit_order))
+            value_key = self.card_values.get(card.name[:-1], 0)
             return suit_key, value_key, card.name
-
         for player in self.players:
             player.hand = sorted(player.hand, key=get_card_sort_key)
+    
+    def lowest_card(self, card_list):
+        lowest_card = card_list[0]
+        for card in card_list[1:]:
+            if self.card_values[card[:-1]] < self.card_values[lowest_card[:-1]]:
+                lowest_card = card
+        return lowest_card
+    
+    def highest_three_cards(self, card_list):
+
+        sorted_cards = sorted(card_list, key=lambda card: self.card_values[card[:-1]], reverse=True)
+        highest_three_cards = sorted_cards[:3]
+
+        return highest_three_cards
     
     def deal_cards(self):
         for _ in range(13):
@@ -72,7 +85,7 @@ class Hand():
             for card in self.players[0].hand:
                 card_index = self.players[0].hand.index(card)
                 valid_selections[card_index] = card           
-                print(f'Type {card_index} and \"Enter\" to play card {card.name}')
+                print(f'Type \'{card_index}\' and \"Enter\" to play card {card.name}')
             print('Select the first card')
             first_selection_index = self.user_card_selection(valid_selections)
             print('Select the second card')
@@ -88,31 +101,34 @@ class Hand():
                 self.remove_played_card(player, card.name)
 
             # Player_2:
-            # select 3 random cards to pass (later change this to make the game harder)
+            # select 3 highest cards to pass (later change this to make the game harder)
             player_2 = self.players[1]
             player_2_hand = self.players[1].hand
-            player_2_selected_cards = random.sample(player_2_hand, 3)
+            player_2_cards = [card.name for card in player_2_hand]
+            player_2_selected_cards = self.highest_three_cards(player_2_cards)
             # remove selected cards from hand
             for card in player_2_selected_cards:
-                self.remove_played_card(player_2, card.name)
+                self.remove_played_card(player_2, card)
 
             # Player_3:
             # select 3 random cards to pass (later change this to make the game harder)
             player_3 = self.players[2]
             player_3_hand = self.players[2].hand
-            player_3_selected_cards = random.sample(player_3_hand, 3)
+            player_3_cards = [card.name for card in player_3_hand]
+            player_3_selected_cards = self.highest_three_cards(player_3_cards)
             # remove selected cards from hand
             for card in player_3_selected_cards:
-                self.remove_played_card(player_3, card.name)
+                self.remove_played_card(player_3, card)
 
             # Player_4:
             # select 3 random cards to pass (later change this to make the game harder)
             player_4 = self.players[3]
             player_4_hand = self.players[3].hand
-            player_4_selected_cards = random.sample(player_4_hand, 3)
+            player_4_cards = [card.name for card in player_4_hand]
+            player_4_selected_cards = self.highest_three_cards(player_4_cards)
             # remove selected cards from hand
             for card in player_4_selected_cards:
-                self.remove_played_card(player_4, card.name)
+                self.remove_played_card(player_4, card)
             
             # add all players selected cards to the previous player hand
             # Player_1 => Player_4
@@ -120,14 +136,14 @@ class Hand():
                 self.players[3].hand.append(card)
             # Player_2 => Player_1
             for card in player_2_selected_cards:
-                self.players[0].hand.append(card)
-            print(f'Player_1 you received cards {[card.name for card in player_2_selected_cards]} from Player_2')
+                self.players[0].hand.append(Card(number = card[:-1], suit = card[-1], name = card))
+            print(f'Player_1 you received cards {[card for card in player_2_selected_cards]} from Player_2')
             # Player_3 => Player_2
             for card in player_3_selected_cards:
-                self.players[1].hand.append(card)
+                self.players[1].hand.append(Card(number = card[:-1], suit = card[-1], name = card))
             # Player_4 => Player_3
             for card in player_4_selected_cards:
-                self.players[2].hand.append(card)
+                self.players[2].hand.append(Card(number = card[:-1], suit = card[-1], name = card))
             
             self.sort_cards()
             valid_selections = {}
@@ -140,7 +156,7 @@ class Hand():
             for card in self.players[0].hand:
                 card_index = self.players[0].hand.index(card)
                 valid_selections[card_index] = card           
-                print(f'Type {card_index} and \"Enter\" to play card {card.name}')
+                print(f'Type \'{card_index}\' and \"Enter\" to play card {card.name}')
             print('Select the first card')
             first_selection_index = self.user_card_selection(valid_selections)
             print('Select the second card')
@@ -208,7 +224,7 @@ class Hand():
             for card in self.players[0].hand:
                 card_index = self.players[0].hand.index(card)
                 valid_selections[card_index] = card           
-                print(f'Type {card_index} and \"Enter\" to play card {card.name}')
+                print(f'Type \'{card_index}\' and \"Enter\" to play card {card.name}')
             print('Select the first card')
             first_selection_index = self.user_card_selection(valid_selections)
             print('Select the second card')
@@ -326,7 +342,7 @@ class Hand():
             print('Note: you have the 2♣ so that is the only card you can play')
             for card in player_1_hand:
                 if card == '2♣':
-                    print(f'Type {player_1_hand.index(card)} and \"Enter\" to play card {card}')
+                    print(f'Type \'{player_1_hand.index(card)}\' and \"Enter\" to play card {card}')
                     card_number = player_1_hand.index(card)
                     valid_selections[card_number] = card
             selected_card_index = self.user_card_selection(valid_selections)
@@ -365,7 +381,7 @@ class Hand():
 
             # print valid card selections (can make this seperate function)
             for card_number, card in valid_selections.items():             
-                print(f'Type {card_number} and \"Enter\" to play card {card}')
+                print(f'Type \'{card_number}\' and \"Enter\" to play card {card}')
 
             # exception handling and validation
             selected_card_index = self.user_card_selection(valid_selections)
@@ -421,8 +437,8 @@ class Hand():
                         card_number = player_hand.index(card)
                         valid_selections[card_number] = card
 
-            # change bot_card selection to improve bot play (min() or  )
-            bot_card = random.sample(list(valid_selections.values()), 1)[0]
+            # select the smallest value card in the valid_selections
+            bot_card = self.lowest_card(list(valid_selections.values()))
 
         self.trick[player.name] = bot_card
         print(f'{player.name} played the card: {bot_card}')
