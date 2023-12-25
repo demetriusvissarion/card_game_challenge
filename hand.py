@@ -466,21 +466,30 @@ class Hand():
     
     def calculate_score(self):
         self.reset_score()
-        # print('Before calculations self.score: ', self.score)
+        shooting_the_moon = None
+
         # use player.cards_won to calculate score
         # if none of the players has all 13 hearts and the Q♠ (26 points total)
         for player in self.players:
-            # print(f'{player.name} cards_won: {player.cards_won}')
-            # print('player.name: ', player.name)
-            # print('before self.score[player.name]: ', self.score[player.name])
             for card in player.cards_won:
                 if card == 'Q♠':
-                    # print('<dev> Q♠ hit')
                     self.score[player.name] += 13
                 elif card[-1] == '♥':
-                    # print('<dev> ♥ hit')
                     self.score[player.name] += 1
-            # print('after self.score[player.name]: ', self.score[player.name])
+        
+        # if any player has 26 points he achieved shooting_the_moon
+        for player_name, player_score in self.score.items():
+            if player_score == 26:
+                shooting_the_moon = player_name
+                break
+
+        # if a player achieved shooting_the_moon, update scores accordingly
+        if shooting_the_moon:
+            for player_name in self.score:
+                if player_name == shooting_the_moon:
+                    self.score[player_name] = 0
+                else:
+                    self.score[player_name] = 26
         
     # find trick winner and save score
     def decide_trick_winner(self):
