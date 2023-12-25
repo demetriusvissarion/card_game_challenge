@@ -13,8 +13,6 @@ Basic rules introduced:
 * Players must follow suit, if possible
 * Tricks are won by the player with the highest card of the leading suit (for now)
 * Player who won the trick plays first card of next trick
-
-
 ## Phase Four
 Full rules implemented:
 * Scoring and calculation of tricks, including 1 point per Heart and 13 points for Q Spades
@@ -23,6 +21,7 @@ Full rules implemented:
 
 
 * Hearts can only be played if no card matching the leading suit is playable - counts as "Hearts are broken"
+
 * Hearts can only lead once broken, or if hand only has Hearts in it
 * 26 points scored by everyone else if one player gets all Hearts and Q Spades
 

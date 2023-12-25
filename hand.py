@@ -330,28 +330,36 @@ class Hand():
                     card_number = player_1_hand.index(card)
                     valid_selections[card_number] = card
             selected_card_index = self.user_card_selection(valid_selections)
+
         else:
-            # if trick has at least one value (it means another player started the trick): 
+            # if trick has at least one value, player is not leading
             if any(value for value in self.trick.values()):
-                for card in player_1_hand:
-                        # if same suit card(s) in hand,limit possible selections to that
+                # if same suit card(s) in hand, limit selections to that
+                if any(card[-1] == self.trick[self.trick_starter][-1] for card in player_1_hand):
+                    for card in player_1_hand:
                         if card[-1] in self.trick[self.trick_starter]:
                             card_number = player_1_hand.index(card)
                             valid_selections[card_number] = card
-            
-            # if trick has at least one value and not "Hearts are broken"
-            if any(value for value in self.trick.values()) and not self.hearts_are_broken:
-                for card in player_1_hand:
-                        # if same suit card(s) in hand,limit possible selections to that
-                        if card[-1] in self.trick[self.trick_starter] and card[-1] != '♥':
+                # if no same suit card(s) in hand, choose from all cards (if heart selected here it will trigger "Hearts are broken")
+                else:
+                    for card in player_1_hand:
+                        card_number = player_1_hand.index(card)
+                        valid_selections[card_number] = card
+
+            # if trick has no value, player is first
+            if not any(value for value in self.trick.values()):
+                # if hearts are not broken, player cannot lead with a heart
+                if not self.hearts_are_broken:
+                    for card in player_1_hand:
+                        if card[-1] != '♥':
                             card_number = player_1_hand.index(card)
                             valid_selections[card_number] = card
 
-            # if no self.trick or no same suit card(s) in hand, choose randomly from all cards (if heart played here it will trigger "Hearts are broken")
-            if not valid_selections:
-                for card in player_1_hand:
-                    card_number = player_1_hand.index(card)
-                    valid_selections[card_number] = card
+                # if hearts are broken, player can lead with any card
+                if self.hearts_are_broken:
+                    for card in player_1_hand:
+                        card_number = player_1_hand.index(card)
+                        valid_selections[card_number] = card
 
             # print('valid_selections: ', valid_selections)
 
@@ -382,27 +390,45 @@ class Hand():
             bot_card = '2♣'
 
         else:
-            # if trick exists:                        
             valid_selections = {}
-            if self.trick:
-                # if same suit cards in hand choose randomly from those cards
-                for card in player_hand:
-                    if card[-1] in self.trick[self.trick_starter]:
+
+            # if trick has at least one value, player is not leading
+            if any(value for value in self.trick.values()):
+                # if same suit card(s) in hand, limit selections to that
+                if any(card[-1] == self.trick[self.trick_starter][-1] for card in player_hand):
+                    for card in player_hand:
+                        if card[-1] in self.trick[self.trick_starter]:
+                            card_number = player_hand.index(card)
+                            valid_selections[card_number] = card
+                # if no same suit card(s) in hand, choose from all cards (if heart selected here it will trigger "Hearts are broken")
+                else:
+                    for card in player_hand:
                         card_number = player_hand.index(card)
                         valid_selections[card_number] = card
-                # if                 
-                    
-            # if no self.trick choose randomly from all cards
-            if not valid_selections:
-                for card in player_hand:
-                    card_number = player_hand.index(card)
-                    valid_selections[card_number] = card 
+
+            # if trick has no value, player is first
+            if not any(value for value in self.trick.values()):
+                # if hearts are not broken, player cannot lead with a heart
+                if not self.hearts_are_broken:
+                    for card in player_hand:
+                        if card[-1] != '♥':
+                            card_number = player_hand.index(card)
+                            valid_selections[card_number] = card
+
+                # if hearts are broken, player can lead with any card
+                if self.hearts_are_broken:
+                    for card in player_hand:
+                        card_number = player_hand.index(card)
+                        valid_selections[card_number] = card
 
             # change bot_card selection to improve bot play (min() or  )
             bot_card = random.sample(list(valid_selections.values()), 1)[0]
 
         self.trick[player.name] = bot_card
         print(f'{player.name} played the card: {bot_card}')
+        if bot_card[-1] == '♥' and not self.hearts_are_broken:
+            print("Hearts are broken!")
+            self.hearts_are_broken = True
         
         self.remove_played_card(player, bot_card)
 
