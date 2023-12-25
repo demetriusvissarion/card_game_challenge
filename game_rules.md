@@ -22,7 +22,7 @@ Calculate final score:
  - the Queen of spades ('Q♠') gives 13 penalty points.
 
 Winner of the Hand:
- - calcualted at end of hand (after trick 13, when all players hands are played)
+ - calculated at end of hand (after trick 13, when all players hands are played)
  - the player with as few points as possible wins
  - if you get ALL penalty cards (13 hearts + Q♠) then you get 0 pts and all other players get 26 pts (Shooting the Moon!)
 
@@ -34,18 +34,3 @@ Winner of the game:
  - when one or more players reach 100 points or more then the entire game is finished
  - the player with the least total points wins
  - if points > 100 and there are two or more equal with the least points then play continues until there's only one winner
-
-Notes:
- * reset all variables at the end of a hand? => shouldn't be needed if I use a new instance of Hand class for each hand, and keep score in a different ScoreBoard class
-
-21/12/2023 To fix/add:
- - fix score per hand is too high, sum many times > 100, sum should be always 26
- - fix total_score does not reset between hands and ends up too big
- - add 'pass 3 cards' rule in app.py
-
-22/12/2023 To fix/add:
- - fix show_hand error 
- AttributeError: 'list' object has no attribute 'name'
-
-23/12/2023 To fix/add:
- - refactoring pass_three_cards hand 1 => not possible now, try again at the end

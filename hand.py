@@ -410,19 +410,25 @@ class Hand():
 
             # if trick has at least one value, player is not leading
             if any(value for value in self.trick.values()):
+
                 # if same suit card(s) in hand, limit selections to that
                 if any(card[-1] == self.trick[self.trick_starter][-1] for card in player_hand):
                     for card in player_hand:
                         if card[-1] in self.trick[self.trick_starter]:
                             card_number = player_hand.index(card)
                             valid_selections[card_number] = card
-                # if no same suit card(s) in hand, choose from all cards (if heart selected here it will trigger "Hearts are broken")
-                else:
-                    for card in player_hand:
-                        card_number = player_hand.index(card)
-                        valid_selections[card_number] = card
 
-            # if trick has no value, player is first
+                # if no same suit card(s) in hand, throw 'Q♠' or choose from all cards (if heart thrown here it will trigger "Hearts are broken")
+                else:
+                    # if 'Q♠' in hand throw it ASAP
+                    if 'Q♠' in player_hand:
+                        valid_selections[0] = 'Q♠'
+                    else:
+                        for card in player_hand:
+                            card_number = player_hand.index(card)
+                            valid_selections[card_number] = card
+
+            # if trick has no value, player is first (leading)
             if not any(value for value in self.trick.values()):
                 # if hearts are not broken, player cannot lead with a heart
                 if not self.hearts_are_broken:
@@ -438,7 +444,13 @@ class Hand():
                         valid_selections[card_number] = card
 
             # select the smallest value card in the valid_selections
-            bot_card = self.lowest_card(list(valid_selections.values()))
+            valid_cards_list = list(valid_selections.values())
+            if 'Q♠' in valid_cards_list and len(valid_cards_list) > 1:
+                # if more than 1 card don't lead with 'Q♠'
+                valid_selections = {k: v for k, v in valid_selections.items() if v != 'Q♠'}
+                bot_card = self.lowest_card(list(valid_selections.values()))
+            else:
+                bot_card = self.lowest_card(list(valid_selections.values()))
 
         self.trick[player.name] = bot_card
         print(f'{player.name} played the card: {bot_card}')
