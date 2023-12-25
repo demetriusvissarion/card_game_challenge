@@ -10,23 +10,16 @@ class Hand():
         self.suits = ['♦', '♣', '♥', '♠' ]
         self.numbers = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
         self.player_names = ['Player_1', 'Player_2', 'Player_3', 'Player_4']
-
         self.suit_order = {'♥': 0, '♠': 1, '♦': 2, '♣': 3}
         self.card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-
         # list of player objects:
         self.players = []
-
         self.deck = []
-
         self.players_order = []
-
         # keep a record of the number of rounds (tricks) played for display
         self.trick_counter = 0
-
         # 'trick' stores cards played during this round (trick) by each player
         self.trick = {'Player_1': '', 'Player_2': '', 'Player_3': '', 'Player_4': ''}
-
         self.trick_starter = ''
         self.trick_winner = ''
         self.hand_winner = None
@@ -61,11 +54,14 @@ class Hand():
         return lowest_card
     
     def highest_three_cards(self, card_list):
+        # if 'Q♠' is in the list
+        if 'Q♠' in card_list:
+            # include 'Q♠' in the list along with the two highest cards
+            highest_cards = ['Q♠'] + sorted(card_list, key=lambda card: self.card_values[card[:-1]], reverse=True)[1:3]
+        else:
+            highest_cards = sorted(card_list, key=lambda card: self.card_values[card[:-1]], reverse=True)[:3]
 
-        sorted_cards = sorted(card_list, key=lambda card: self.card_values[card[:-1]], reverse=True)
-        highest_three_cards = sorted_cards[:3]
-
-        return highest_three_cards
+        return highest_cards
     
     def deal_cards(self):
         for _ in range(13):

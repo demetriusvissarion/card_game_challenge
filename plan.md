@@ -24,12 +24,8 @@ Full rules implemented:
 ## Bonus
 Begin adding some intelligent play to the "Bot" players e.g. (not necessarily in order):
 * Try to avoid winning any tricks (players pass the 3 highest cards, and play only the lowest cards)
-
-
-* Throw away Q Spades if ever possible
-   => pass_three_cards // if no same suit card(s) in hand
 * Don't lead something like Q Spades or high Hearts if possible
-   => never lead with Q Spades
+* Throw away Q Spades if ever possible
 
 Terms:
 trick
