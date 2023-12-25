@@ -461,7 +461,6 @@ class Hand():
         self.remove_played_card(player, bot_card)
 
     def play_hand(self):
-        self.trick_counter += 1
         first_player_index = self.player_names.index(self.trick_starter)
         self.players_order = self.player_names[(first_player_index):] + self.player_names[:(first_player_index)]
         string_players_order = [player for player in self.players_order]
